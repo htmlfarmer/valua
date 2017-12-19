@@ -4,7 +4,7 @@
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD3AiNwlR6x-rHjYGbp277Whqf3t6LKvQ&callback=initMap"
   type="text/javascript"></script>
 <script type="text/javascript">   
-function initMap () {  
+function initMap {  
    var geocoder = new google.maps.Geocoder();
    var address = 'London, UK';
 
