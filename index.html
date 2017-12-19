@@ -1,8 +1,25 @@
 <html>
 <head>
 <script type="text/javascript" charset="utf-8" src="map.js"></script>
+<script type="text/javascript" charset="utf-8" src="jquery-3.2.1.js"></script>
 <script type="text/javascript" charset="utf-8" src="http://www.openlayers.org/api/OpenLayers.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD3AiNwlR6x-rHjYGbp277Whqf3t6LKvQ &callback=initMap"
+  type="text/javascript"></script>
+<script type="text/javascript">     
+   var geocoder = new google.maps.Geocoder();
+   var address = 'London, UK';
+
+   if (geocoder) {
+      geocoder.geocode({ 'address': address }, function (results, status) {
+         if (status == google.maps.GeocoderStatus.OK) {
+            console.log(results[0].geometry.location);
+         }
+         else {
+            console.log("Geocoding failed: " + status);
+         }
+      });
+   }    
+</script>
 <script type="text/javascript" charset="utf-8">
   function Example() {
     address = ['111 W. Maddision, Chicago, IL'];
@@ -18,7 +35,7 @@
 </script>
 </head>
   <body onload="Example()">
-  <iframe src="http://valuea.wordpress.com" frameborder="0" style="width: 100%; height: 100%" allowfullscreen></iframe>
+  <!--<iframe src="http://valuea.wordpress.com" frameborder="0" style="width: 100%; height: 100%" allowfullscreen></iframe>-->
   <h1>Geo Location</h1>
   <input id="address_text" type="text" value="Chicago, IL">
   <input id="submit" type="submit" value="Map">
