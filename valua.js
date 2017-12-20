@@ -10,18 +10,24 @@ function display (locations) {
   });
 }
 
-function initMap () {
-  var geocoder = new google.maps.Geocoder();
+function init () {
   var address = 'London, UK';
+  getGeoCode(address);
+}
+
+function getGeoCode(address) {
+  var geocoder = new google.maps.Geocoder();
   if (geocoder) {
     geocoder.geocode({ 'address': address }, function (results, status) {
       if (status == google.maps.GeocoderStatus.OK) {
         console.log(results[0].geometry.location);
         display(results[0].geometry.location);
+        return (results);
       }
       else {
         console.log("Geocoding failed: " + status);
       }
     });
   }
+  return geocode
 }
