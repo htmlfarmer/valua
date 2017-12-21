@@ -1,17 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>VALUA.</title>
   <meta charset="utf-8">
   <script src="d3.v3.js" charset="utf-8"></script>
   <script src="topojson.v1.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD3AiNwlR6x-rHjYGbp277Whqf3t6LKvQ&callback=init"
   type="text/javascript" charset="utf-8"></script>
   <script type="text/javascript" charset="utf-8" src="valua.js"></script>
+  <script type="text/javascript" charset="utf-8" src="heatmap.js"></script>
   <script type="text/javascript" charset="utf-8" src="world.js"></script>
   <link href="world.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" charset="utf-8" src="jquery-3.2.1.js"></script>
+  <script type="text/javascript" charset="utf-8" src="initial.js"></script>
+  <style>
+    /* Always set the map height explicitly to define the size of the div
+     * element that contains the map. */
+    #map {
+      height: 100%;
+    }
+    /* Optional: Makes the sample page fill the window. */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #floating-panel {
+      position: absolute;
+      top: 10px;
+      left: 25%;
+      z-index: 5;
+      background-color: #fff;
+      padding: 5px;
+      border: 1px solid #999;
+      text-align: center;
+      font-family: 'Roboto','sans-serif';
+      line-height: 30px;
+      padding-left: 10px;
+    }
+    #floating-panel {
+      background-color: #fff;
+      border: 1px solid #999;
+      left: 25%;
+      padding: 5px;
+      position: absolute;
+      top: 10px;
+      z-index: 5;
+    }
+  </style>
 </head>
 <body>
-
-</body>
+  <body>
+    <div id="floating-panel">
+      <button onclick="toggleHeatmap()">Toggle Heatmap</button>
+      <button onclick="changeGradient()">Change gradient</button>
+      <button onclick="changeRadius()">Change radius</button>
+      <button onclick="changeOpacity()">Change opacity</button>
+    </div>
+    <center>VALUA.</center>
+    <div id="map"></div>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD3AiNwlR6x-rHjYGbp277Whqf3t6LKvQ&libraries=visualization&callback=initMap">
+    </script>
+  </body>
 </html>

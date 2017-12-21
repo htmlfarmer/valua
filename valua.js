@@ -10,11 +10,6 @@ function display (locations) {
   });
 }
 
-function init () {
-  var address = 'London, UK';
-  getGeoCode(address);
-}
-
 function getGeoCode(address) {
   var geocoder = new google.maps.Geocoder();
   if (geocoder) {
@@ -29,5 +24,4 @@ function getGeoCode(address) {
       }
     });
   }
-  return geocode
 }
