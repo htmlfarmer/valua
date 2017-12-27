@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SearchResults:searchresults xsi:schemaLocation="http://www.zillow.com/static/xsd/SearchResults.xsd https://www.zillowstatic.com/vstatic/6ce354c/static/xsd/SearchResults.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SearchResults="http://www.zillow.com/static/xsd/SearchResults.xsd"><request><address>2923 71st street</address><citystatezip>Woodridge IL</citystatezip></request><message><text>Request successfully processed</text>
+<code>0</code></message>
+<response><results>
+  <result><zpid>89184329</zpid>
+  <links><homedetails>https://www.zillow.com/homedetails/2923-71st-St-Woodridge-IL-60517/89184329_zpid/</homedetails><graphsanddata>http://www.zillow.com/homedetails/2923-71st-St-Woodridge-IL-60517/89184329_zpid/#charts-and-data</graphsanddata><mapthishome>http://www.zillow.com/homes/89184329_zpid/</mapthishome><comparables>http://www.zillow.com/homes/comps/89184329_zpid/</comparables></links><address><street>2923 71st St</street>
+  <zipcode>60517</zipcode>
+  <city>Woodridge</city>
+  <state>IL</state>
+  <latitude>41.756971</latitude>
+  <longitude>-88.056182</longitude>
+</address>
+<zestimate><amount currency="USD">390138</amount>
+<last-updated>12/26/2017</last-updated>
+<oneWeekChange deprecated="true"></oneWeekChange>
+<valueChange duration="30" currency="USD">22392</valueChange>
+<valuationRange><low currency="USD">358927</low>
+<high currency="USD">581306</high></valuationRange>
+<percentile>0</percentile></zestimate><localRealEstate>
+<region name="Woodridge" id="55253" type="city"><zindexValue>247,300</zindexValue><links><overview>http://www.zillow.com/local-info/IL-Woodridge/r_55253/</overview><forSaleByOwner>http://www.zillow.com/woodridge-il/fsbo/</forSaleByOwner><forSale>http://www.zillow.com/woodridge-il/</forSale></links></region></localRealEstate></result></results></response></SearchResults:searchresults><!-- H:006  T:119ms  S:869  R:Wed Dec 27 15:26:51 PST 2017  B:5.0.51000.3-hotfix_2017-12-26_fecb01c.3f62b94~hotfix-platform-for-2017-12-26.2e7029f -->
