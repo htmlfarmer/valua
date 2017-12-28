@@ -8,11 +8,11 @@ import xml.etree.ElementTree as ET
 
 # harmonic mean
 from scipy import stats
+import numpy
 
-print stats.hmean([ 3, 12, 4 ])
+
 
 ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
-PROPERTY_ID = "48749425"
 
 def MAIN ():
     locations = [{"address" : "2923 71st Street", "citystatezip" : "Woodridge, IL"}, \
@@ -23,16 +23,6 @@ def MAIN ():
         html = ZILLOW(location["address"], location["citystatezip"])
         PARSE_XML(html)
 
-# About: Get Remote Content
-url = "http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm?zws-id=" + ZILLOW_KEY + "&zpid=" + PROPERTY_ID
-regex = "" # for static regex
-
-if(len(sys.argv) > 1):
-    url = sys.argv[1]
-    if(len(sys.argv) > 2):
-        regex = sys.argv[2]
-else: # requires "http://" before
-    url = ""
 
 def ZILLOW_ESTIMATE():
     url = "http://www.zillow.com/webservice/GetZestimate.htm?zws-id=" + ZILLOW_KEY + "&zpid=" + PROPERTY_ID
@@ -55,36 +45,31 @@ def ZILLOW(address, citystatezip):
     url = "http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=" + ZILLOW_KEY + "&address=" + address_url + "&citystatezip=" + citystatezip_url
     #print "LOOKUP: " + url
     html = GET_REQUEST(url)
-    if(regex):
-        matcher = re.compile(regex)
-        match = matcher.search(html).group()
-        #print match
-    else:
-        print html #PRINT_XML(xml)
     return html
 
 def PARSE_XML(text):
-    print "XML TREE PROCESSING"
     root = ET.fromstring(text)
     for zpid in root.iter('zpid'):
         zpid = zpid.text
-    for address in root.iter('address'):
+    for address in root.iter('street'):
         address = address.text
     for citystatezip in root.iter('citystatezip'):
         citystatezip = citystatezip.text
-    for zestimate in root.iter('zestimate'):
-        zestimate = zestimate.text
+    for zestimate in root.iter('amount'):
+        zestimate = int(zestimate.text)
     for low in root.iter('low'):
-        low = low.text
+        low = int(low.text)
     for high in root.iter('high'):
-        high = high.text
+        high = int(high.text)
     for latitude in root.iter('latitude'):
         latitude = latitude.text
     for longitude in root.iter('longitude'):
         longitude = longitude.text
-    doc = {"zpid" : zpid, "zestimate" : zestimate, "low" : low, "high" : high, \
+    hmean = stats.hmean([ zestimate, high, low ])
+    gmean = stats.gmean([ zestimate, high, low ])
+    doc = {"zpid" : zpid, "price" : zestimate, "low" : low, "high" : high, \
             "latitude" : latitude, "longitude" : longitude, "citystatezip" : citystatezip, \
-            "address" : address}
+            "address" : address, "hmean" : hmean, "gmean" : gmean}
     print doc
     return doc
 
