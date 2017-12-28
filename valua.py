@@ -14,14 +14,24 @@ import numpy
 
 ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
 
+# goal is to compare yelp with ZILLOW
 def MAIN ():
-    locations = [{"address" : "2923 71st Street", "citystatezip" : "Woodridge, IL"}, \
-                {"address" : "321 N. Howard St.", "citystatezip" : "Moscow, ID"}, \
-                {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
+    locations = [{"address" : "412 6th Ave", "citystatezip" : "Tacoma, WA 98402"},
+        {"address" : "2028 S 7th St", "citystatezip" : "Tacoma, WA 98405"}, \
+        {"address" : "708 S Junett St", "citystatezip" : "Tacoma, WA 98405"}, \
+        {"address" : "1111 Morse Ave SPC 168", "citystatezip" : "Sunnyvale, CA 94089"}, \
+        {"address" : "251 N 19TH St", "citystatezip" : "San Jose, CA 95112"}, \
+        {"address" : "252 Sonora Pass Rd", "citystatezip" : "Vallejo, CA 94589"}, \
+        {"address" : "628 2nd St", "citystatezip" : "Rodeo, CA 94572"}, \
+        {"address" : "339 W Chanslor Ave", "citystatezip" : "Richmond, CA 94801"}, \
+        {"address" : "1468 Sandpiper Spit", "citystatezip" : "Richmond, CA 94801"}, \
+        {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
+        {"address" : "834 Loma Prieta Dr", "citystatezip" : "Aptos, CA 95003"}, \
+        {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
     for location in locations :
         print location
         html = ZILLOW(location["address"], location["citystatezip"])
-        PARSE_XML(html)
+        PARSE_ZILLOW_XML(html)
 
 
 def ZILLOW_ESTIMATE():
@@ -47,7 +57,7 @@ def ZILLOW(address, citystatezip):
     html = GET_REQUEST(url)
     return html
 
-def PARSE_XML(text):
+def PARSE_ZILLOW_XML(text):
     root = ET.fromstring(text)
     for zpid in root.iter('zpid'):
         zpid = zpid.text
@@ -56,11 +66,14 @@ def PARSE_XML(text):
     for citystatezip in root.iter('citystatezip'):
         citystatezip = citystatezip.text
     for zestimate in root.iter('amount'):
-        zestimate = int(zestimate.text)
+        if zestimate.text is not None:
+            zestimate = int(zestimate.text)
     for low in root.iter('low'):
-        low = int(low.text)
+        if low.text is not None:
+            low = int(low.text)
     for high in root.iter('high'):
-        high = int(high.text)
+        if high.text is not None:
+            high = int(high.text)
     for latitude in root.iter('latitude'):
         latitude = latitude.text
     for longitude in root.iter('longitude'):
