@@ -6,6 +6,11 @@ import json
 import sys
 import xml.etree.ElementTree as ET
 
+# harmonic mean
+from scipy import stats
+
+print stats.hmean([ 3, 12, 4 ])
+
 ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
 PROPERTY_ID = "48749425"
 
@@ -18,16 +23,27 @@ if(len(sys.argv) > 1):
     if(len(sys.argv) > 2):
         regex = sys.argv[2]
 else: # requires "http://" before
-    url= "http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm?zws-id=" + ZILLOW_KEY + "&zpid=" + PROPERTY_ID
+    url = ""
 
+def ZILLOW_ESTIMATE():
+    url = "http://www.zillow.com/webservice/GetZestimate.htm?zws-id=" + ZILLOW_KEY + "&zpid=" + PROPERTY_ID
+    html = GET_REQUEST(url)
+    if(regex):
+        matcher = re.compile(regex)
+        match = matcher.search(html).group()
+        print match
+    else:
+        print html
+    return html
 
-import xml.etree.ElementTree as ET
-
-def ZILLOW(): #(address, citystatezip):
+def ZILLOW(address, citystatezip):
+    # FAQ: https://www.zillow.com/howto/api/GetSearchResults.htm (main starting point)
+    # FAQ: https://www.zillow.com/howto/api/GetUpdatedPropertyDetails.htm
     # http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=<ZWSID>&address=2114+Bigelow+Ave&citystatezip=Seattle%2C+WA
-    address = "2923+71st+street"
-    citystatezip = "Woodridge+IL"
-    url = "http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=" + ZILLOW_KEY + "&address=" + address + "&citystatezip=" + citystatezip
+    print "LOOKUP ADDRESS: " + address + " " + citystatezip
+    address_url = address.replace(" ", "+")
+    citystatezip_url = citystatezip.replace(" ", "+")
+    url = "http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=" + ZILLOW_KEY + "&address=" + address_url + "&citystatezip=" + citystatezip_url
     #print "LOOKUP: " + url
     xml = GET_REQUEST(url)
     if(regex):
@@ -38,6 +54,8 @@ def ZILLOW(): #(address, citystatezip):
         print "test" #xml
         ZILLOW_XML(xml)
     return xml
+    
+ZILLOW("2923 71st Street", "Woodridge, IL")
 
 def ZILLOW_XML(xml):
     tree = ET.parse(xml)
@@ -45,7 +63,7 @@ def ZILLOW_XML(xml):
     for child in root:
         print "hi"#print (child.tag, child.attrib)
 
-def VALUA():
+def ZILLOW_ESTIMATE():
     url = "http://www.zillow.com/webservice/GetZestimate.htm?zws-id=" + ZILLOW_KEY + "&zpid=" + PROPERTY_ID
     html = GET_REQUEST(url)
     if(regex):
@@ -79,8 +97,3 @@ def GET_REQUEST(address):
     response = urllib2.urlopen(req)
     content = response.read()
     return content
-
-# TEST CODE GOES HERE
-
-#VALUA()
-ZILLOW()
