@@ -28,22 +28,22 @@ def ZILLOW(): #(address, citystatezip):
     address = "2923+71st+street"
     citystatezip = "Woodridge+IL"
     url = "http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=" + ZILLOW_KEY + "&address=" + address + "&citystatezip=" + citystatezip
-    print "LOOKUP: " + url
+    #print "LOOKUP: " + url
     xml = GET_REQUEST(url)
     if(regex):
         matcher = re.compile(regex)
         match = matcher.search(html).group()
         #print match
     else:
-        #print xml
+        print "test" #xml
         ZILLOW_XML(xml)
     return xml
 
 def ZILLOW_XML(xml):
     tree = ET.parse(xml)
     root = tree.getroot()
-    #for child in root:
-    #    print (child.tag, child.attrib)
+    for child in root:
+        print "hi"#print (child.tag, child.attrib)
 
 def VALUA():
     url = "http://www.zillow.com/webservice/GetZestimate.htm?zws-id=" + ZILLOW_KEY + "&zpid=" + PROPERTY_ID
