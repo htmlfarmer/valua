@@ -1,6 +1,6 @@
-function init () {
+function initial () {
   var address = 'London, UK';
-  getGeoCode(address);
+  //getGeoCode(address);
   initMap();
   //display(address);
 }

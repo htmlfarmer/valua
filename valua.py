@@ -7,10 +7,10 @@ import sys
 import xml.etree.ElementTree as ET
 
 # harmonic mean
-from scipy import stats
-import numpy
+#from scipy import stats
+#import numpy
 
-
+test = '<tr ng-repeat="measure in component.measures" class="measure ng-scope" style="">"Percentage of adults reporting fair or poor health (age-adjusted)"><td class="target mobile-drop ng-binding" ng-bind-html="measure.displayTarget">12%</td></tr>'
 
 ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
 
@@ -28,11 +28,36 @@ def MAIN ():
         {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "834 Loma Prieta Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
+
     for location in locations :
         print location
-        html = ZILLOW(location["address"], location["citystatezip"])
-        PARSE_ZILLOW_XML(html)
+        #html = ZILLOW(location["address"], location["citystatezip"])
+        #PARSE_ZILLOW_XML(html)
 
+    health_locations = [{"state" : "california", "county" : "santa-clara"}] #, {"state" : "idaho", "county" : "latah"}]
+
+    for health in health_locations :
+        print health
+        html = CDC_HEALTH(health["state"], health["county"])
+
+def CDC_HEALTH_PARSE(html):
+    #DISPLAY(html)
+    print html
+    founds = re.findall('<tr*>(.*?)</tr>',str(html))
+    for found in founds:
+        print(found)
+    # matcher = re.compile(regex)
+    # match = matcher.search(html).group()
+    return html
+
+def CDC_HEALTH(state, county):
+    url = "http://www.countyhealthrankings.org/app/" + state + "/2017/rankings/" + county + "/county/outcomes/overall/snapshot"
+    #html = GET_REQUEST(url)
+    CDC_HEALTH_PARSE(test)
+    return html
+
+def DISPLAY(html): #experimental doesn't work yet
+    print re.sub("<.*?>", "", html)
 
 def ZILLOW_ESTIMATE():
     url = "http://www.zillow.com/webservice/GetZestimate.htm?zws-id=" + ZILLOW_KEY + "&zpid=" + PROPERTY_ID
@@ -78,8 +103,8 @@ def PARSE_ZILLOW_XML(text):
         latitude = latitude.text
     for longitude in root.iter('longitude'):
         longitude = longitude.text
-    hmean = stats.hmean([ zestimate, high, low ])
-    gmean = stats.gmean([ zestimate, high, low ])
+    hmean = 0 #stats.hmean([ zestimate, high, low ])
+    gmean = 0 #stats.gmean([ zestimate, high, low ])
     doc = {"zpid" : zpid, "price" : zestimate, "low" : low, "high" : high, \
             "latitude" : latitude, "longitude" : longitude, "citystatezip" : citystatezip, \
             "address" : address, "hmean" : hmean, "gmean" : gmean}
@@ -111,11 +136,12 @@ def VALUA_DETAILS():
 def GET_REQUEST(address):
     timeout = 60
     socket.setdefaulttimeout(timeout)
-    user_agent = 'VALUA. + RESEARCH (Linux; West Coast, USA)'
+    user_agent = 'VALUA. + RESEARCH SCIENCE (Linux; West Coast, USA)'
     headers = { 'User-Agent' : user_agent }
     req = urllib2.Request(url = address, headers = headers)
     response = urllib2.urlopen(req)
     content = response.read()
-    return content
+    text = content.decode() # maybe remove
+    return text
 
 MAIN()
