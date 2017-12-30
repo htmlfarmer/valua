@@ -59,6 +59,7 @@ ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
 
 # goal is to compare yelp with ZILLOW
 def MAIN ():
+    """
     locations = [{"address" : "412 6th Ave", "citystatezip" : "Tacoma, WA 98402"},
         {"address" : "2028 S 7th St", "citystatezip" : "Tacoma, WA 98405"}, \
         {"address" : "708 S Junett St", "citystatezip" : "Tacoma, WA 98405"}, \
@@ -70,18 +71,18 @@ def MAIN ():
         {"address" : "1468 Sandpiper Spit", "citystatezip" : "Richmond, CA 94801"}, \
         {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "834 Loma Prieta Dr", "citystatezip" : "Aptos, CA 95003"}, \
+        {"address" : "321 N Howard St.", "citystatezip" : "Moscow, ID"}, \
         {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
-
+    """
+    locations = [{"address" : "2923 71st Street", "citystatezip" : "Woodridge, IL 60517"},
+                 {"address" : "321 N Howard St.", "citystatezip" : "Moscow, ID"},
+                 {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
+        
     for location in locations :
-        print location
-        html = ZILLOW(location["address"], location["citystatezip"])
-        PARSE_ZILLOW_XML(html)
-
-    health_locations = [{"state" : "california", "county" : "santa-clara"}, {"state" : "idaho", "county" : "latah"}]
-
-    for health in health_locations :
-        print health
-        #html = CDC_HEALTH(health["state"], health["county"])
+        #print location
+        #html = ZILLOW(location["address"], location["citystatezip"])
+        #PARSE_ZILLOW_XML(html)
+        location = CENSUS_GEOCODE(location["address"], location["citystatezip"])
 
 def CDC_HEALTH_PARSE(html):
     start = html.find("Poor or fair health")
@@ -166,6 +167,45 @@ def VALUA_LOAN (address, latitude, longitude):
     # MONTHLY PAYMENT
     print "PROPERTY LOAN EVALUATION: https://en.wikipedia.org/wiki/Mortgage_loan"
 
+# FAQ: https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html#_Toc379292359
+# example: https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=4600+Silver+Hill+Rd%2C+Suitland%2C+MD+20746&benchmark=9&format=json
+def CENSUS_GEOCODE (address, citystatezip):
+    address = address.replace(" ", "+")
+    address = address.replace(",", "%2C")
+    citystatezip = citystatezip.replace(" ", "+")
+    citystatezip = citystatezip.replace(",", "%2C")
+    url = "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=" + address + "+" + citystatezip + "&benchmark=9&format=json"
+    json = GET_REQUEST(url).replace(" ", "")
+    start = json.find("\"x\":")
+    end = json.find(",", start)
+    longitude = json[start+4:end]
+    start = json.find("\"y\":")
+    end = json.find("}", start)
+    latitude = json[start+4:end]
+    return {"longitude" : longitude, "latitude" : latitude}
+
+# https://www.census.gov/data/developers/data-sets/economic-indicators.html
+def CENSUS_HOUSING ():
+    return
+
+# https://www.census.gov/data/developers/data-sets/Health-Insurance-Statistics.html
+# https://www.census.gov/geographies/reference-files/2016/demo/popest/2016-fips.html
+def CENSUS_HEALTH():
+    # SAN JOSE:
+    # BERKELY:
+    # OAKLAND:
+    # VALEJO: 
+    # SAN MATAO: 
+    # CHICAGO: 
+    # MOSCOW: 
+    # NEW YORK:
+    # BROOKLYN:
+    # QUEENS:
+    # BRONX:
+    # SEATTLE:
+    # PORTLAND: 
+    return
+
 def GET_REQUEST(address):
     timeout = 60
     socket.setdefaulttimeout(timeout)
@@ -173,9 +213,7 @@ def GET_REQUEST(address):
     headers = { 'User-Agent' : user_agent }
     req = urllib2.Request(url = address, headers = headers)
     response = urllib2.urlopen(req)
-    binary = response.read()
-    text = unicode(binary, errors='replace')
-    text = text.decode('utf-8')
-    return text
+    html = response.read()
+    return html
 
 MAIN()
