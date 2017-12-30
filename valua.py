@@ -14,7 +14,7 @@ ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
 
 # goal is to compare yelp with ZILLOW
 def MAIN ():
-    """
+    
     locations = [{"address" : "412 6th Ave", "citystatezip" : "Tacoma, WA 98402"},
         {"address" : "2028 S 7th St", "citystatezip" : "Tacoma, WA 98405"}, \
         {"address" : "708 S Junett St", "citystatezip" : "Tacoma, WA 98405"}, \
@@ -26,12 +26,7 @@ def MAIN ():
         {"address" : "1468 Sandpiper Spit", "citystatezip" : "Richmond, CA 94801"}, \
         {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "834 Loma Prieta Dr", "citystatezip" : "Aptos, CA 95003"}, \
-        {"address" : "321 N Howard St.", "citystatezip" : "Moscow, ID"}, \
         {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
-    """
-    locations = [{"address" : "2923 71st Street", "citystatezip" : "Woodridge, IL 60517"},
-                 {"address" : "321 N Howard St.", "citystatezip" : "Moscow, ID"},
-                 {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
         
     for location in locations :
         #print location
