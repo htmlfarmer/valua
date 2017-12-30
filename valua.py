@@ -2,15 +2,58 @@ import urllib
 import urllib2
 import socket # needed for timeout
 import re
-import json
-import sys
 import xml.etree.ElementTree as ET
 
-# harmonic mean
+# TODO: request API + https://stackoverflow.com/questions/2018026/what-are-the-differences-between-the-urllib-urllib2-and-requests-module
+
+#harmonic mean
 #from scipy import stats
 #import numpy
 
-test = '<tr ng-repeat="measure in component.measures" class="measure ng-scope" style="">"Percentage of adults reporting fair or poor health (age-adjusted)"><td class="target mobile-drop ng-binding" ng-bind-html="measure.displayTarget">12%</td></tr>'
+test = '<tr ng-repeat="measure in component.measures" class="measure ng-scope" style="">\
+            <!-- ngIf: measure.showDetails != 1 -->\
+            <!-- ngIf: measure.showDetails == 1 --><td ng-if="measure.showDetails == 1" \
+            class="name measure-name ng-scope" title="Percentage of adults reporting fair \
+            or poor health (age-adjusted)"> \
+                <a ui-sref="measures.state.tab({ category: categoryId == 1 ? \'outcomes\' \
+                : \'factors\', measure: measure.id, tab: \'map\' })" \
+                href="/app/california/2017/measure/outcomes/2/map"> \
+                  <span ng-bind-html="measure.name" class="ng-binding">Poor or fair health</span> \
+                  <!-- ngIf: snapshot_printing -->\
+                </a>\
+            </td><!-- end ngIf: measure.showDetails == 1 -->\
+            <!-- ngIf: !snapshot_printing --><td ng-if="!snapshot_printing" \
+            class="info noPrint popover--wide ng-scope"><!-- ngIf: measure.hasFootnote -->\
+            <span class="fa fa-info-circle ng-scope" ng-if="measure.hasFootnote" \
+            data-bs-popover="footnotePopover" data-placement="bottom" data-trigger="click" \
+            data-container="body" data-content="Data should not be compared with prior years" \
+            data-html="true"><span>(Click for info)</span></span><!-- end ngIf: measure.hasFootnote -->\
+              <!-- ngIf: measure.id === 1 && cdcData.length --></td><!-- end ngIf: !snapshot_printing -->\
+            <td class="value" ng-class="{\'highlight\': measure.area_to_highlight != 0, \'highlight-explore\': \
+            measure.area_to_highlight == 2, \'highlight-strength\': measure.area_to_highlight == 1}"> \
+                <!-- ngIf: measure.area_to_highlight == 2 -->\
+                <!-- ngIf: measure.area_to_highlight != 2 -->\
+                <span ng-if="measure.area_to_highlight != 2" ng-bind-html="measure.displayValue" \
+                class="ng-binding ng-scope">12%</span><!-- end ngIf: measure.area_to_highlight != 2 -->\
+            </td>\
+            <!-- Trend -->\
+            <!-- ngIf: isDefaultYear --><td ng-if="isDefaultYear" class="trend-icon-value mobile-drop ng-scope">\
+                <!-- ngIf: measure.trend -->\
+            </td><!-- end ngIf: isDefaultYear -->\
+            <!-- Error margin -->\
+            <td class="error-margin mobile-drop ng-binding" ng-bind-html="measure.displayCIRange">11-12%</td>\
+            <!-- National benchmark -->\
+            <td class="target mobile-drop ng-binding" ng-bind-html="measure.displayTarget">12%</td>\
+            <!-- State value -->\
+            <!-- ngIf: current.state_fips != \'11\' -->\
+            <td ng-if="current.state_fips != \'11\'" \
+            class="state-value ng-binding ng-scope" \
+            ng-bind-html="measure.displayState">18%</td>\
+            <!-- end ngIf: current.state_fips != \'11\' -->\
+            <!-- Measure row does not show a value for Rank. -->\
+            <!-- ngIf: current.state_fips != \'11\' -->\
+            <td ng-if="current.state_fips != \'11\'" \
+            class="rank ng-scope">&nbsp;</td><!-- end ngIf: current.state_fips != \'11\' --></tr>'
 
 ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
 
@@ -31,44 +74,34 @@ def MAIN ():
 
     for location in locations :
         print location
-        #html = ZILLOW(location["address"], location["citystatezip"])
-        #PARSE_ZILLOW_XML(html)
+        html = ZILLOW(location["address"], location["citystatezip"])
+        PARSE_ZILLOW_XML(html)
 
-    health_locations = [{"state" : "california", "county" : "santa-clara"}] #, {"state" : "idaho", "county" : "latah"}]
+    health_locations = [{"state" : "california", "county" : "santa-clara"}, {"state" : "idaho", "county" : "latah"}]
 
     for health in health_locations :
         print health
-        html = CDC_HEALTH(health["state"], health["county"])
+        #html = CDC_HEALTH(health["state"], health["county"])
 
 def CDC_HEALTH_PARSE(html):
-    #DISPLAY(html)
-    print html
-    founds = re.findall('<tr*>(.*?)</tr>',str(html))
-    for found in founds:
-        print(found)
-    # matcher = re.compile(regex)
-    # match = matcher.search(html).group()
-    return html
+    start = html.find("Poor or fair health")
+    if start != -1:
+        end = html.find("%", start)
+        data = html[end-2:end]
+    if data != -1:
+        print data
+        return int(data)
+    else:
+        return None
 
 def CDC_HEALTH(state, county):
     url = "http://www.countyhealthrankings.org/app/" + state + "/2017/rankings/" + county + "/county/outcomes/overall/snapshot"
-    #html = GET_REQUEST(url)
-    CDC_HEALTH_PARSE(test)
+    html = GET_REQUEST(url)
+    CDC_HEALTH_PARSE(html)
     return html
 
 def DISPLAY(html): #experimental doesn't work yet
     print re.sub("<.*?>", "", html)
-
-def ZILLOW_ESTIMATE():
-    url = "http://www.zillow.com/webservice/GetZestimate.htm?zws-id=" + ZILLOW_KEY + "&zpid=" + PROPERTY_ID
-    html = GET_REQUEST(url)
-    if(regex):
-        matcher = re.compile(regex)
-        match = matcher.search(html).group()
-        print match
-    else:
-        print html
-    return html
 
 def ZILLOW(address, citystatezip):
     # FAQ: https://www.zillow.com/howto/api/GetSearchResults.htm (main starting point)
@@ -111,27 +144,27 @@ def PARSE_ZILLOW_XML(text):
     print doc
     return doc
 
-def ZILLOW_ESTIMATE():
-    url = "http://www.zillow.com/webservice/GetZestimate.htm?zws-id=" + ZILLOW_KEY + "&zpid=" + PROPERTY_ID
-    html = GET_REQUEST(url)
-    if(regex):
-        matcher = re.compile(regex)
-        match = matcher.search(html).group()
-        print match
-    else:
-        print html
-    return html
+def VALUA (house):
+    print "VALUA.ORG"
+    # 1.) COMPARISON
+    print "1.) COMPARISON"
+    print "2.) COST (NEW)"
+    print "3.) INCOME (RENTAL)"
+    return
 
-def VALUA_DETAILS():
-    zillow_details = "http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm?zws-id=" + ZILLOW_KEY + "&zpid=" + PROPERTY_ID
-    html = GET_REQUEST(zillow_details)
-    if(regex):
-        matcher = re.compile(regex)
-        match = matcher.search(html).group()
-        print match
-    else:
-        print html
-    return html
+def VALUA_RADAR(address, latitude, longitude):
+    # function collects all the data needed on a particular address or lat/lng
+    return
+
+def VALUA_TITLE (address, latitude, longitude):
+    print "PROPERTY TITLE EVALUATION: https://en.wikipedia.org/wiki/Title_(property)"
+    return
+
+def VALUA_LOAN (address, latitude, longitude):
+    # BARROWERS
+    # LENDERS
+    # MONTHLY PAYMENT
+    print "PROPERTY LOAN EVALUATION: https://en.wikipedia.org/wiki/Mortgage_loan"
 
 def GET_REQUEST(address):
     timeout = 60
@@ -140,8 +173,9 @@ def GET_REQUEST(address):
     headers = { 'User-Agent' : user_agent }
     req = urllib2.Request(url = address, headers = headers)
     response = urllib2.urlopen(req)
-    content = response.read()
-    text = content.decode() # maybe remove
+    binary = response.read()
+    text = unicode(binary, errors='replace')
+    text = text.decode('utf-8')
     return text
 
 MAIN()
