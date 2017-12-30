@@ -11,6 +11,8 @@ import xml.etree.ElementTree as ET
 #import numpy
 
 ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
+GOOGLE_API_KEY = "AIzaSyAD3AiNwlR6x-rHjYGbp277Whqf3t6LKvQ"
+US_CENSUS_KEY = "9d4c29e072ec00a326361a8146c792f465d49186"
 
 # goal is to compare yelp with ZILLOW
 def MAIN ():
@@ -31,13 +33,24 @@ def MAIN ():
         
     for location in locations :
         print location
-        html = ZILLOW(location["address"], location["citystatezip"])
-        PARSE_ZILLOW_XML(html)
-        location = CENSUS_GEOCODE(location["address"], location["citystatezip"])
-        GOOGLE_PLACES(location)
+        CENSUS_ECONOMIC()
+        #html = ZILLOW(location["address"], location["citystatezip"])
+        #PARSE_ZILLOW_XML(html)
+        #location = CENSUS_GEOCODE(location["address"], location["citystatezip"])
+        #GOOGLE_PLACES(location)
 
-def DISPLAY(html): #experimental doesn't work yet
-    print re.sub("<.*?>", "", html)
+
+# https://www.census.gov/data/developers/data-sets/economic-census.html
+# https://api.census.gov/data/2012/ewks/variables.html
+# EXAMPLES https://api.census.gov/data/2012/ewks/examples.html
+def CENSUS_ECONOMIC ():
+    FIELDS = "RCPTOT,OPTAX"
+    NAICS2012 = "71" # 71 ARTS AND ENTERTAINMENT
+    url = "https://api.census.gov/data/2012/ewks?get=" + FIELDS + "&for=state:*&NAICS2012=" + NAICS2012 \
+    + "&key=" + US_CENSUS_KEY
+    text = GET_REQUEST(url)
+    print text
+    return text
 
 def ZILLOW(address, citystatezip):
     # FAQ: https://www.zillow.com/howto/api/GetSearchResults.htm (main starting point)
@@ -58,6 +71,22 @@ def EUROSTAT(latitude, logitude):
     #education
     #social
     return
+
+def GOOGLE_PLACES_DETAILS(place_id):
+    url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=" + GOOGLE_API_KEY
+    json = GET_REQUEST(url)
+    return json
+
+def GOOGLE_PLACES_ID(json):
+    ids = []
+    start = json.find("\"places_id\" : ")
+    while start != -1:
+        end = json.find(",", start)
+        place_id = json[start+14:end]
+        ids = ids.append(place_id)
+        start = json.find("\"places_id\" : ", end) # start = last end
+    print ids
+    return ids
 
 def GOOGLE_PLACES_RATINGS(json):
     ratings = []
@@ -86,15 +115,15 @@ def GOOGLE_PLACE_TYPES(json):
 def GOOGLE_PLACES(location):
     if location["latitude"] != None and location["longitude"] != None:
         radius = "5000"
-        types = "food"
+        #types = "food"
         # &keyword=vegetarian
-        YOUR_API_KEY = "AIzaSyAD3AiNwlR6x-rHjYGbp277Whqf3t6LKvQ"
         url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" \
-        + location["latitude"] + "," + location["longitude"] + "&radius=" + radius + "&types=" \
-        + types + "&name=" + "&sensor=false&key=" + YOUR_API_KEY
+        + location["latitude"] + "," + location["longitude"] + "&radius=" + radius + "&name=" \
+        + "&sensor=false&key=" + GOOGLE_API_KEY
         json = GET_REQUEST(url)
         GOOGLE_PLACES_RATINGS(json)
         GOOGLE_PLACE_TYPES(json)
+        print json
         return json
     else:
         return None
@@ -149,6 +178,20 @@ def VALUA_LOAN (address, latitude, longitude):
     # LENDERS
     # MONTHLY PAYMENT
     print "PROPERTY LOAN EVALUATION: https://en.wikipedia.org/wiki/Mortgage_loan"
+
+# https://www.census.gov/data/developers/data-sets/economic-indicators.html
+def CENSUS_HOUSING ():
+    return
+
+# https://www.census.gov/data/developers/data-sets/international-database.html
+def CENSUS_INTERNATIONAL (location):
+    return
+
+# ACTUAL https://www.census.gov/data/developers/data-sets/popest-popproj/popest.html
+# PROJECTED https://www.census.gov/data/developers/data-sets/popest-popproj/popproj.html
+def CENSUS_POPULATION ():
+    population = 0
+    return population
 
 # FAQ: https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html#_Toc379292359
 # example: https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=4600+Silver+Hill+Rd%2C+Suitland%2C+MD+20746&benchmark=9&format=json
