@@ -59,16 +59,27 @@ def EUROSTAT(latitude, logitude):
     #social
     return
 
-def AVG_GOOGLE_RATING(json):
+def GOOGLE_PLACES_RATINGS(json):
     ratings = []
     start = json.find("\"rating\" : ")
     while start != -1:
         end = json.find(",", start)
         rating = json[start+11:end]
         ratings.append(float(rating))
-        print rating
         start = json.find("\"rating\" : ", end) # start = last end
+    print ratings
     return ratings
+
+def GOOGLE_PLACE_TYPES(json):
+    types = ""
+    start = json.find("\"types\" : [")
+    while start != -1:
+        end = json.find("],", start)
+        typed = json[start+11:end]
+        types = types + typed + ","
+        start = json.find("\"types\" : ", end) # start = last end
+    print types[0:len(types)-1].replace('\n', '').replace(' ', '')
+    return types[0:len(types)-1].replace('\n', '').replace(' ', '')
 
 # GOOGLE PLACES API https://developers.google.com/places/web-service/
 # https://maps.googleapis.com/maps/api/place/textsearch/json?query=123+main+street&key=YOUR_API_KEY
@@ -82,7 +93,8 @@ def GOOGLE_PLACES(location):
         + location["latitude"] + "," + location["longitude"] + "&radius=" + radius + "&types=" \
         + types + "&name=" + "&sensor=false&key=" + YOUR_API_KEY
         json = GET_REQUEST(url)
-        AVG_GOOGLE_RATING(json)
+        GOOGLE_PLACES_RATINGS(json)
+        GOOGLE_PLACE_TYPES(json)
         return json
     else:
         return None
