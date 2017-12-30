@@ -10,51 +10,6 @@ import xml.etree.ElementTree as ET
 #from scipy import stats
 #import numpy
 
-test = '<tr ng-repeat="measure in component.measures" class="measure ng-scope" style="">\
-            <!-- ngIf: measure.showDetails != 1 -->\
-            <!-- ngIf: measure.showDetails == 1 --><td ng-if="measure.showDetails == 1" \
-            class="name measure-name ng-scope" title="Percentage of adults reporting fair \
-            or poor health (age-adjusted)"> \
-                <a ui-sref="measures.state.tab({ category: categoryId == 1 ? \'outcomes\' \
-                : \'factors\', measure: measure.id, tab: \'map\' })" \
-                href="/app/california/2017/measure/outcomes/2/map"> \
-                  <span ng-bind-html="measure.name" class="ng-binding">Poor or fair health</span> \
-                  <!-- ngIf: snapshot_printing -->\
-                </a>\
-            </td><!-- end ngIf: measure.showDetails == 1 -->\
-            <!-- ngIf: !snapshot_printing --><td ng-if="!snapshot_printing" \
-            class="info noPrint popover--wide ng-scope"><!-- ngIf: measure.hasFootnote -->\
-            <span class="fa fa-info-circle ng-scope" ng-if="measure.hasFootnote" \
-            data-bs-popover="footnotePopover" data-placement="bottom" data-trigger="click" \
-            data-container="body" data-content="Data should not be compared with prior years" \
-            data-html="true"><span>(Click for info)</span></span><!-- end ngIf: measure.hasFootnote -->\
-              <!-- ngIf: measure.id === 1 && cdcData.length --></td><!-- end ngIf: !snapshot_printing -->\
-            <td class="value" ng-class="{\'highlight\': measure.area_to_highlight != 0, \'highlight-explore\': \
-            measure.area_to_highlight == 2, \'highlight-strength\': measure.area_to_highlight == 1}"> \
-                <!-- ngIf: measure.area_to_highlight == 2 -->\
-                <!-- ngIf: measure.area_to_highlight != 2 -->\
-                <span ng-if="measure.area_to_highlight != 2" ng-bind-html="measure.displayValue" \
-                class="ng-binding ng-scope">12%</span><!-- end ngIf: measure.area_to_highlight != 2 -->\
-            </td>\
-            <!-- Trend -->\
-            <!-- ngIf: isDefaultYear --><td ng-if="isDefaultYear" class="trend-icon-value mobile-drop ng-scope">\
-                <!-- ngIf: measure.trend -->\
-            </td><!-- end ngIf: isDefaultYear -->\
-            <!-- Error margin -->\
-            <td class="error-margin mobile-drop ng-binding" ng-bind-html="measure.displayCIRange">11-12%</td>\
-            <!-- National benchmark -->\
-            <td class="target mobile-drop ng-binding" ng-bind-html="measure.displayTarget">12%</td>\
-            <!-- State value -->\
-            <!-- ngIf: current.state_fips != \'11\' -->\
-            <td ng-if="current.state_fips != \'11\'" \
-            class="state-value ng-binding ng-scope" \
-            ng-bind-html="measure.displayState">18%</td>\
-            <!-- end ngIf: current.state_fips != \'11\' -->\
-            <!-- Measure row does not show a value for Rank. -->\
-            <!-- ngIf: current.state_fips != \'11\' -->\
-            <td ng-if="current.state_fips != \'11\'" \
-            class="rank ng-scope">&nbsp;</td><!-- end ngIf: current.state_fips != \'11\' --></tr>'
-
 ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
 
 # goal is to compare yelp with ZILLOW
