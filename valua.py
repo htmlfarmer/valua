@@ -31,8 +31,8 @@ def MAIN ():
         
     for location in locations :
         print location
-        #html = ZILLOW(location["address"], location["citystatezip"])
-        #PARSE_ZILLOW_XML(html)
+        html = ZILLOW(location["address"], location["citystatezip"])
+        PARSE_ZILLOW_XML(html)
         location = CENSUS_GEOCODE(location["address"], location["citystatezip"])
         GOOGLE_PLACES(location)
 
