@@ -15,7 +15,9 @@ ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
 # goal is to compare yelp with ZILLOW
 def MAIN ():
     
-    locations = [{"address" : "412 6th Ave", "citystatezip" : "Tacoma, WA 98402"},
+    locations = [\
+        {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
+        {"address" : "412 6th Ave", "citystatezip" : "Tacoma, WA 98402"}, \
         {"address" : "2028 S 7th St", "citystatezip" : "Tacoma, WA 98405"}, \
         {"address" : "708 S Junett St", "citystatezip" : "Tacoma, WA 98405"}, \
         {"address" : "1111 Morse Ave SPC 168", "citystatezip" : "Sunnyvale, CA 94089"}, \
@@ -24,7 +26,6 @@ def MAIN ():
         {"address" : "628 2nd St", "citystatezip" : "Rodeo, CA 94572"}, \
         {"address" : "339 W Chanslor Ave", "citystatezip" : "Richmond, CA 94801"}, \
         {"address" : "1468 Sandpiper Spit", "citystatezip" : "Richmond, CA 94801"}, \
-        {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "834 Loma Prieta Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
         
@@ -33,6 +34,7 @@ def MAIN ():
         #html = ZILLOW(location["address"], location["citystatezip"])
         #PARSE_ZILLOW_XML(html)
         location = CENSUS_GEOCODE(location["address"], location["citystatezip"])
+        GOOGLE_PLACES(location)
 
 def DISPLAY(html): #experimental doesn't work yet
     print re.sub("<.*?>", "", html)
@@ -48,6 +50,31 @@ def ZILLOW(address, citystatezip):
     #print "LOOKUP: " + url
     html = GET_REQUEST(url)
     return html
+
+# http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
+# DATABASE: http://ec.europa.eu/eurostat/data/database
+def EUROSTAT(latitude, logitude):
+    #health
+    #education
+    #social
+    return
+
+# GOOGLE PLACES API https://developers.google.com/places/web-service/
+# https://maps.googleapis.com/maps/api/place/textsearch/json?query=123+main+street&key=YOUR_API_KEY
+def GOOGLE_PLACES(location):
+    if location["latitude"] != None and location["longitude"] != None:
+        radius = "5000"
+        types = "food"
+        # &keyword=vegetarian
+        YOUR_API_KEY = "AIzaSyAD3AiNwlR6x-rHjYGbp277Whqf3t6LKvQ"
+        url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" \
+        + location["latitude"] + "," + location["longitude"] + "&radius=" + radius + "&types=" \
+        + types + "&name=" + "&sensor=false&key=" + YOUR_API_KEY
+        json = GET_REQUEST(url)
+        print json
+        return json
+    else:
+        return None
 
 def PARSE_ZILLOW_XML(text):
     root = ET.fromstring(text)
@@ -109,13 +136,19 @@ def CENSUS_GEOCODE (address, citystatezip):
     citystatezip = citystatezip.replace(",", "%2C")
     url = "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=" + address + "+" + citystatezip + "&benchmark=9&format=json"
     json = GET_REQUEST(url).replace(" ", "")
+    # find the logitude and latitude in the JSON reply
     start = json.find("\"x\":")
-    end = json.find(",", start)
-    longitude = json[start+4:end]
-    start = json.find("\"y\":")
-    end = json.find("}", start)
-    latitude = json[start+4:end]
+    if(start != -1):
+        end = json.find(",", start)
+        longitude = json[start+4:end]
+        start = json.find("\"y\":")
+        end = json.find("}", start)
+        latitude = json[start+4:end]
+    else:
+        longitude = None
+        latitude = None
     geocode = {"longitude" : longitude, "latitude" : latitude}
+    print geocode
     return geocode
 
 # https://www.census.gov/data/developers/data-sets/economic-indicators.html
