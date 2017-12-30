@@ -29,7 +29,7 @@ def MAIN ():
         {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
         
     for location in locations :
-        #print location
+        print location
         #html = ZILLOW(location["address"], location["citystatezip"])
         #PARSE_ZILLOW_XML(html)
         location = CENSUS_GEOCODE(location["address"], location["citystatezip"])
@@ -132,7 +132,8 @@ def CENSUS_GEOCODE (address, citystatezip):
     start = json.find("\"y\":")
     end = json.find("}", start)
     latitude = json[start+4:end]
-    return {"longitude" : longitude, "latitude" : latitude}
+    geocode = {"longitude" : longitude, "latitude" : latitude}
+    return geocode
 
 # https://www.census.gov/data/developers/data-sets/economic-indicators.html
 def CENSUS_HOUSING ():
