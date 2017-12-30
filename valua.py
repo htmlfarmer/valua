@@ -34,23 +34,6 @@ def MAIN ():
         #PARSE_ZILLOW_XML(html)
         location = CENSUS_GEOCODE(location["address"], location["citystatezip"])
 
-def CDC_HEALTH_PARSE(html):
-    start = html.find("Poor or fair health")
-    if start != -1:
-        end = html.find("%", start)
-        data = html[end-2:end]
-    if data != -1:
-        print data
-        return int(data)
-    else:
-        return None
-
-def CDC_HEALTH(state, county):
-    url = "http://www.countyhealthrankings.org/app/" + state + "/2017/rankings/" + county + "/county/outcomes/overall/snapshot"
-    html = GET_REQUEST(url)
-    CDC_HEALTH_PARSE(html)
-    return html
-
 def DISPLAY(html): #experimental doesn't work yet
     print re.sub("<.*?>", "", html)
 
