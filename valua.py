@@ -59,6 +59,17 @@ def EUROSTAT(latitude, logitude):
     #social
     return
 
+def AVG_GOOGLE_RATING(json):
+    ratings = []
+    start = json.find("\"rating\" : ")
+    while start != -1:
+        end = json.find(",", start)
+        rating = json[start+11:end]
+        ratings.append(float(rating))
+        print rating
+        start = json.find("\"rating\" : ", end) # start = last end
+    return ratings
+
 # GOOGLE PLACES API https://developers.google.com/places/web-service/
 # https://maps.googleapis.com/maps/api/place/textsearch/json?query=123+main+street&key=YOUR_API_KEY
 def GOOGLE_PLACES(location):
@@ -71,7 +82,7 @@ def GOOGLE_PLACES(location):
         + location["latitude"] + "," + location["longitude"] + "&radius=" + radius + "&types=" \
         + types + "&name=" + "&sensor=false&key=" + YOUR_API_KEY
         json = GET_REQUEST(url)
-        print json
+        AVG_GOOGLE_RATING(json)
         return json
     else:
         return None
