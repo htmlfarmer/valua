@@ -1,11 +1,10 @@
-import urllib
-import urllib2
-import socket # needed for timeout
-import re
-import xml.etree.ElementTree as ET
+#import urllib
+#import re
+#import xml.etree.ElementTree as ET
 import census
 import google
 import zillow
+
 
 # TODO: request API + https://stackoverflow.com/questions/2018026/what-are-the-differences-between-the-urllib-urllib2-and-requests-module
 
@@ -36,11 +35,11 @@ def MAIN ():
         
     for location in locations :
         print location
-        #CENSUS_ECONOMIC()
+        census.CENSUS_ECONOMIC()
         html = zillow.ZILLOW(location["address"], location["citystatezip"])
         zillow.PARSE_ZILLOW_XML(html)
-        #location = CENSUS_GEOCODE(location["address"], location["citystatezip"])
-        #GOOGLE_PLACES(location)
+        location = census.CENSUS_GEOCODE(location["address"], location["citystatezip"])
+        google.GOOGLE_PLACES(location)
 
 # http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
 # DATABASE: http://ec.europa.eu/eurostat/data/database
@@ -71,15 +70,5 @@ def VALUA_LOAN (address, latitude, longitude):
     # LENDERS
     # MONTHLY PAYMENT
     print "PROPERTY LOAN EVALUATION: https://en.wikipedia.org/wiki/Mortgage_loan"
-
-def GET_REQUEST(address):
-    timeout = 60
-    socket.setdefaulttimeout(timeout)
-    user_agent = 'VALUA. + RESEARCH SCIENCE (Linux; West Coast, USA)'
-    headers = { 'User-Agent' : user_agent }
-    req = urllib2.Request(url = address, headers = headers)
-    response = urllib2.urlopen(req)
-    html = response.read()
-    return html
 
 MAIN()

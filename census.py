@@ -1,4 +1,4 @@
-from valua import GET_REQUEST
+from request import GET_REQUEST
 
 US_CENSUS_KEY = "9d4c29e072ec00a326361a8146c792f465d49186"
 # https://www.census.gov/data/developers/data-sets/economic-census.html
