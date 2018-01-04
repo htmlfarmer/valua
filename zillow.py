@@ -1,6 +1,5 @@
-from valua import GET_REQUEST
+from request import GET_REQUEST
 import xml.etree.ElementTree as ET
-import valua
 
 ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
 
