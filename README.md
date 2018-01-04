@@ -1,2 +1,4 @@
 # valua.org
-VALUA.
+VALUA. (prototype) 
+
+http://htmlfarmer.github.io/valua/
