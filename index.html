@@ -3,13 +3,7 @@
 <head>
   <title>VALUA.</title>
   <meta charset="utf-8">
-  <link href="" rel="stylesheet" type="text/css" />
-  <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD3AiNwlR6x-rHjYGbp277Whqf3t6LKvQ&libraries=visualization&callback=initial">
-  </script>
   <script type="text/javascript" charset="utf-8" src="valua.js"></script>
-  <script type="text/javascript" charset="utf-8" src="heatmap.js"></script>
-  <script type="text/javascript" charset="utf-8" src="initial.js"></script>
   <style>
   /* Always set the map height explicitly to define the size of the div
   * element that contains the map. */
@@ -48,13 +42,29 @@
 </head>
 <body>
   <body>
-    <center>VALUA.</center>
-    <div id="floating-panel">
-      <button onclick="toggleHeatmap()">Toggle Heatmap</button>
-      <button onclick="changeGradient()">Change gradient</button>
-      <button onclick="changeRadius()">Change radius</button>
-      <button onclick="changeOpacity()">Change opacity</button>
+    <div>
+      <h1>ap·prais·al</h1>
+      <form>
+        Square Feet<input type="numbers" id="sqft" placeholder="sqft" />
+        <br />
+        Lot Size<input type="numbers" id="lotsqft" placeholder="sqft" />
+        <br />
+        Bedrooms<input type="numbers" id="bedrooms" placeholder="Bedooms" />
+        <br />
+        Bathrooms<input type="numbers" id="bathrooms" placeholder="bathrooms" />
+        <br />
+
+        <select id="choice">
+          <option value="1">Metro 100,000+</option>
+          <option value="2">City 50,000</option>
+          <option value="3">Town 10,000</option>
+        </select>
+        <br/>
+        <br/>
+        <input id="est" type="button" value="Estimate" onclick="calculator()" />
+        <input id="reset" type="reset" value="Reset" />
+      </form>
+      <h1 id="result"> = </h1>
     </div>
-    <div id="map"></div>
   </body>
   </html>

@@ -1,5 +1,16 @@
 from request import GET_REQUEST
 
+FIPS = {"CT" : "09", "ME" : "23", "MA" : "25", "NH" : "33", "RI" : "44", \
+        "VT" : "50", "NJ" : "34", "NY" : "36", "PA" : "42", "IL" : "17", \
+        "IN" : "18", "MI" : "26", "OH" : "39", "WI" : "55", "IA" : "19", \
+        "KS" : "20", "MN" : "27", "MO" : "29", "NE" : "31", "ND" : "38", \
+        "SD" : "46", "DE" : "10", "FL" : "12", "GA" : "13", "MD" : "24", \
+        "NC" : "37", "SC" : "45", "VA" : "51", "WV" : "54", "AL" : "01", \
+        "KY" : "21", "MS" : "28", "TN" : "47", "AR" : "05", "LA" : "22", \
+        "OK" : "40", "TX" : "48", "AZ" : "04", "CO" : "08", "ID" : "16", \
+        "MT" : "30", "NV" : "32", "NM" : "35", "UT" : "49", "WY" : "56", \
+        "AK" : "02", "CA" : "06", "HI" : "15", "OR" : "41", "WA" : "53"}
+
 US_CENSUS_KEY = "9d4c29e072ec00a326361a8146c792f465d49186"
 # https://www.census.gov/data/developers/data-sets/economic-census.html
 # https://api.census.gov/data/2012/ewks/variables.html (REALLY GOOD LINK)
