@@ -7,7 +7,6 @@ function calculator() {
   var result;
   var calc = document.getElementById("choice").value
 
-
 // source https://www.census.gov/construction/chars/interactive/
   var AVG_BATHROOMS = 2.56
   var AVG_BEDROOMS = 3.5
@@ -15,6 +14,7 @@ function calculator() {
   var AVG_PRICE = 255000
 
 // source https://www.census.gov/construction/chars/pdf/soldmedavgprice.pdf
+// source https://www.trulia.com/home_prices/
   var AVG_METRO = 450000
   var AVG_CITY = 347000
   var AVG_TOWN = 268000
