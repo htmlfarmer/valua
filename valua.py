@@ -19,6 +19,7 @@ import zillow
 def MAIN ():
     
     locations = [\
+        {"address" : "Pul-e-Sukhta Rd", "citystatezip" : "Kabul, Afghanistan"}, \
         {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "412 6th Ave", "citystatezip" : "Tacoma, WA 98402"}, \
         {"address" : "2028 S 7th St", "citystatezip" : "Tacoma, WA 98405"}, \
@@ -35,9 +36,11 @@ def MAIN ():
     for location in locations :
         print location
         #census.CENSUS_ECONOMIC()
-        html = zillow.ZILLOW(location["address"], location["citystatezip"])
-        zillow.PARSE_ZILLOW_XML(html)
-        location = census.CENSUS_GEOCODE(location["address"], location["citystatezip"])
+        #html = zillow.ZILLOW(location["address"], location["citystatezip"])
+        #zillow.PARSE_ZILLOW_XML(html)
+        # doesn't work for international
+        # location = census.CENSUS_GEOCODE(location["address"], location["citystatezip"])
+        location = google.GOOGLE_GEOCODE(location["address"] + " " + location["citystatezip"])
         google.GOOGLE_PLACES(location)
 
 # http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
