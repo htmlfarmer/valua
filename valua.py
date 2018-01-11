@@ -5,7 +5,6 @@ import census
 import google
 import zillow
 
-
 # TODO: request API + https://stackoverflow.com/questions/2018026/what-are-the-differences-between-the-urllib-urllib2-and-requests-module
 
 #harmonic mean
@@ -35,7 +34,7 @@ def MAIN ():
         
     for location in locations :
         print location
-        census.CENSUS_ECONOMIC()
+        #census.CENSUS_ECONOMIC()
         html = zillow.ZILLOW(location["address"], location["citystatezip"])
         zillow.PARSE_ZILLOW_XML(html)
         location = census.CENSUS_GEOCODE(location["address"], location["citystatezip"])

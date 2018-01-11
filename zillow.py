@@ -4,6 +4,8 @@ import xml.etree.ElementTree as ET
 ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"
 
 def PARSE_ZILLOW_XML(text):
+    if "Error:" in text:
+        return None
     root = ET.fromstring(text)
     for zpid in root.iter('zpid'):
         zpid = zpid.text
