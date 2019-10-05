@@ -19,7 +19,6 @@ import zillow
 def MAIN ():
     
     locations = [\
-        {"address" : "Pul-e-Sukhta Rd", "citystatezip" : "Kabul, Afghanistan"}, \
         {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "412 6th Ave", "citystatezip" : "Tacoma, WA 98402"}, \
         {"address" : "2028 S 7th St", "citystatezip" : "Tacoma, WA 98405"}, \
