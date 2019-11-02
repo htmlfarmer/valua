@@ -18,7 +18,8 @@ import zillow
 # goal is to compare yelp with ZILLOW
 def MAIN ():
     
-    locations = [\
+    locations = [ \
+        {"address": "2923 71st Street", "citystatezip": "Woodridge, IL 60517"}, \
         {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "412 6th Ave", "citystatezip" : "Tacoma, WA 98402"}, \
         {"address" : "2028 S 7th St", "citystatezip" : "Tacoma, WA 98405"}, \
@@ -34,11 +35,12 @@ def MAIN ():
         
     for location in locations :
         print location
-        census.CENSUS_ECONOMIC()
+        #census.CENSUS_ECONOMIC()
         html = zillow.ZILLOW(location["address"], location["citystatezip"])
         zillow.PARSE_ZILLOW_XML(html)
         # doesn't work for international
         location = census.CENSUS_GEOCODE(location["address"], location["citystatezip"])
+        # google started requiring payment codes!?
         #location = google.GOOGLE_GEOCODE(location["address"] + " " + location["citystatezip"])
         google.GOOGLE_PLACES(location)
 
