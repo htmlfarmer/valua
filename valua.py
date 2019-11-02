@@ -1,6 +1,14 @@
 #import urllib
 #import re
 #import xml.etree.ElementTree as ET
+
+"""
+# Do a Wikipedia Lookup Based on geolocation (Cape Cod, MA) http://api.geonames.org/findNearbyWikipedia?lat=41.618116&lng=-70.485361&username=demo
+wikihtml = GET_REQUEST("http://api.geonames.org/findNearbyWikipedia?lat="+ str(lat) +"&lng="+ str(lng) + "&username=asolr")
+wiki = ET.fromstring(wikihtml) # if you need the xml data type
+print ET.tostring(wiki)
+"""
+
 import census
 import google
 import zillow
@@ -23,6 +31,7 @@ def MAIN ():
 
     urls = [ \
         {"address": "https://en.wikipedia.org/wiki/2019"}, \
+        {"address": "https://www.ci.moscow.id.us/507/Daily-Activity-Log"}, \
         {"address": "https://ashercmartin.wordpress.com/links/"}, ]
 
     for url in urls:
