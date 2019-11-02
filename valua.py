@@ -34,12 +34,12 @@ def MAIN ():
         
     for location in locations :
         print location
-        #census.CENSUS_ECONOMIC()
-        #html = zillow.ZILLOW(location["address"], location["citystatezip"])
-        #zillow.PARSE_ZILLOW_XML(html)
+        census.CENSUS_ECONOMIC()
+        html = zillow.ZILLOW(location["address"], location["citystatezip"])
+        zillow.PARSE_ZILLOW_XML(html)
         # doesn't work for international
-        # location = census.CENSUS_GEOCODE(location["address"], location["citystatezip"])
-        location = google.GOOGLE_GEOCODE(location["address"] + " " + location["citystatezip"])
+        location = census.CENSUS_GEOCODE(location["address"], location["citystatezip"])
+        #location = google.GOOGLE_GEOCODE(location["address"] + " " + location["citystatezip"])
         google.GOOGLE_PLACES(location)
 
 # http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
