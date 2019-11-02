@@ -4,20 +4,31 @@
 import census
 import google
 import zillow
+from request import GET_REQUEST
 
 # TODO: request API + https://stackoverflow.com/questions/2018026/what-are-the-differences-between-the-urllib-urllib2-and-requests-module
 
-#harmonic mean
-#from scipy import stats
-#import numpy
-
 # COLLABORATORS:
-# MIT/HARVARD https://atlas.media.mit.edu/en/rankings/product/sitc/
-# ASTOR/NASA https://lpdaac.usgs.gov/dataset_discovery/aster/aster_products_table/ast_09xt_v003
 
-# goal is to compare yelp with ZILLOW
+# MAIN SEARCH ENGINE
+def SEARCH(url):
+
+    print url
+    html = GET_REQUEST(url)
+    print html
+    return html
+
+# MAIN PROGRAM OUTLINE
 def MAIN ():
-    
+
+    urls = [ \
+        {"address": "https://en.wikipedia.org/wiki/2019"}, \
+        {"address": "https://ashercmartin.wordpress.com/links/"}, ]
+
+    for url in urls:
+        print url
+        SEARCH(url["address"])
+
     locations = [ \
         {"address": "2923 71st Street", "citystatezip": "Woodridge, IL 60517"}, \
         {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
@@ -32,7 +43,7 @@ def MAIN ():
         {"address" : "1468 Sandpiper Spit", "citystatezip" : "Richmond, CA 94801"}, \
         {"address" : "834 Loma Prieta Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
-        
+
     for location in locations :
         print location
         #census.CENSUS_ECONOMIC()
@@ -46,32 +57,5 @@ def MAIN ():
 
 # http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
 # DATABASE: http://ec.europa.eu/eurostat/data/database
-def EUROSTAT(latitude, logitude):
-    #health
-    #education
-    #social
-    return
-
-def VALUA (house):
-    print "VALUA.ORG"
-    # 1.) COMPARISON
-    print "1.) COMPARISON"
-    print "2.) COST (NEW)"
-    print "3.) INCOME (RENTAL)"
-    return
-
-def VALUA_RADAR(address, latitude, longitude):
-    # function collects all the data needed on a particular address or lat/lng
-    return
-
-def VALUA_TITLE (address, latitude, longitude):
-    print "PROPERTY TITLE EVALUATION: https://en.wikipedia.org/wiki/Title_(property)"
-    return
-
-def VALUA_LOAN (address, latitude, longitude):
-    # BARROWERS
-    # LENDERS
-    # MONTHLY PAYMENT
-    print "PROPERTY LOAN EVALUATION: https://en.wikipedia.org/wiki/Mortgage_loan"
 
 MAIN()
