@@ -53,7 +53,7 @@ def MAIN ():
         location = census.CENSUS_GEOCODE(location["address"], location["citystatezip"])
         # google started requiring payment codes!?
         #location = google.GOOGLE_GEOCODE(location["address"] + " " + location["citystatezip"])
-        google.GOOGLE_PLACES(location)
+        #google.GOOGLE_PLACES(location)
 
 # http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
 # DATABASE: http://ec.europa.eu/eurostat/data/database
