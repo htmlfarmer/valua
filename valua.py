@@ -2,6 +2,19 @@
 #import re
 #import xml.etree.ElementTree as ET
 
+import census
+import google
+import zillow
+
+import time
+import datetime
+
+#print "Time in seconds since the epoch: %s" %time.time()
+print "REPORT: " , datetime.datetime.now()
+print "  DATE: ", datetime.date.today().strftime("%B") + " " + datetime.date.today().strftime("%d") + ", " + datetime.date.today().strftime("%Y")
+
+from request import GET_REQUEST
+
 """
 # Do a Wikipedia Lookup Based on geolocation (Cape Cod, MA) http://api.geonames.org/findNearbyWikipedia?lat=41.618116&lng=-70.485361&username=demo
 wikihtml = GET_REQUEST("http://api.geonames.org/findNearbyWikipedia?lat="+ str(lat) +"&lng="+ str(lng) + "&username=asolr")
@@ -9,10 +22,7 @@ wiki = ET.fromstring(wikihtml) # if you need the xml data type
 print ET.tostring(wiki)
 """
 
-import census
-import google
-import zillow
-from request import GET_REQUEST
+
 
 # TODO: request API + https://stackoverflow.com/questions/2018026/what-are-the-differences-between-the-urllib-urllib2-and-requests-module
 
@@ -38,6 +48,7 @@ def MAIN ():
         print url
         SEARCH(url["address"])
 
+"""
     locations = [ \
         {"address": "2923 71st Street", "citystatezip": "Woodridge, IL 60517"}, \
         {"address" : "0 Treasure Island Dr", "citystatezip" : "Aptos, CA 95003"}, \
@@ -53,6 +64,7 @@ def MAIN ():
         {"address" : "834 Loma Prieta Dr", "citystatezip" : "Aptos, CA 95003"}, \
         {"address" : "210 E 1st Street", "citystatezip" : "Moscow, ID"}]
 
+
     for location in locations :
         print location
         #census.CENSUS_ECONOMIC()
@@ -63,6 +75,7 @@ def MAIN ():
         # google started requiring payment codes!?
         #location = google.GOOGLE_GEOCODE(location["address"] + " " + location["citystatezip"])
         #google.GOOGLE_PLACES(location)
+"""
 
 # http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
 # DATABASE: http://ec.europa.eu/eurostat/data/database
