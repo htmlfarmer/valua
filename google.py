@@ -1,4 +1,4 @@
-from request import GET_REQUEST
+from request import REQUEST
 
 GOOGLE_API_KEY = "AIzaSyAD3AiNwlR6x-rHjYGbp277Whqf3t6LKvQ"
 

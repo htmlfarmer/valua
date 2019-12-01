@@ -1,4 +1,4 @@
-from request import GET_REQUEST
+from request import REQUEST
 
 FIPS = {"CT" : "09", "ME" : "23", "MA" : "25", "NH" : "33", "RI" : "44", \
         "VT" : "50", "NJ" : "34", "NY" : "36", "PA" : "42", "IL" : "17", \
@@ -21,7 +21,7 @@ def CENSUS_ECONOMIC ():
     NAICS2012 = "71" # 71 ARTS AND ENTERTAINMENT
     url = "https://api.census.gov/data/2012/ewks?get=" + FIELDS + "&for=state:*&NAICS2012=" + NAICS2012 \
     + "&key=" + US_CENSUS_KEY
-    text = GET_REQUEST(url)
+    text = REQUEST(url)
     print text
     return text
 

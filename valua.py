@@ -26,7 +26,7 @@ print "  REPORT # " , datetime.datetime.now()
 print "    DATE : ", datetime.date.today().strftime("%B") + " " + datetime.date.today().strftime("%d") + ", " + datetime.date.today().strftime("%Y")
 print "==================================================="
 
-from request import GET_REQUEST
+from request import REQUEST
 
 """
 # Do a Wikipedia Lookup Based on geolocation (Cape Cod, MA) http://api.geonames.org/findNearbyWikipedia?lat=41.618116&lng=-70.485361&username=demo
@@ -88,10 +88,11 @@ def MAIN ():
 
     # search wikipedia for each stock in the nasdaq
     # and find the most relevant page
+    """
     for stock in nasdaq:
         print stock
         wikipedia.wiki_research(stock)
-
+    """
     for stock in sp100:
         print stock
         wikipedia.wiki_research(stock)

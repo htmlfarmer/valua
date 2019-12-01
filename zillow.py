@@ -1,4 +1,4 @@
-from request import GET_REQUEST
+from request import REQUEST
 import xml.etree.ElementTree as ET
 
 ZILLOW_KEY = "X1-ZWz18uigx8hcej_1acr8"

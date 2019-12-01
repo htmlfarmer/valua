@@ -1,6 +1,6 @@
 
 import xml.etree.ElementTree as ET
-from request import GET_REQUEST
+from request import REQUEST
 
 # source: https://stackoverflow.com/questions/54516687/how-to-print-get-specific-lines-in-an-html-file-in-python-3
 # https://stackoverflow.com/questions/11709079/parsing-html-using-python
@@ -18,21 +18,19 @@ def wiki_research(keywords):
     keywords = keywords.replace(" ", "+") # replace spaces with +'s
     keywords = keywords.replace("\t", "%09") # replace tabs
     url = 'https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=' + keywords + '&title=Special%3ASearch&go=Go&ns0=1'
-    html = GET_REQUEST(url)
+    html = REQUEST(url)
     # study the doccument for the search results
     root = ET.fromstring(html)
-    # xpath to look for //*[@id="mw-content-text"]/div[3]/ul/li[1]/div[1]/a
+    # get the first result of the search and test it to see if it is correct
     index = './/*[@id="mw-content-text"]/div[3]/ul/li[1]/div[' + str(1) + ']/a'
     search_result = root.find(index)
-    # xpath of the first search term //*[@id="mw-content-text"]/div[3]/ul/li[1]/div[1]/a/span[1]
-    # xpath of "ALL" the search results looks like this //*[@id="mw-content-text"]
-    # xpath of the second result //*[@id="mw-content-text"]/div[3]/ul/li[2]/div[1]/a
-    # xpath of the third  result //*[@id="mw-content-text"]/div[3]/ul/li[3]/div[1]/a/span
-    # xpath of the first  result //*[@id="mw-content-text"]/div[3]/ul/li[4]/div[1]/a
-    if search_result is None:
+    # did the search result have good data or not
+    if search_result is None: # this means that a search was successful
         print name + " no further search xpath search test correct page!"
-    else:
+    else: # grab the search result and go to that website to read the stock market info
         website = "https://en.wikipedia.org" + search_result.attrib["href"]
+        html = REQUEST(website)
+        wiki_stock(html) # since its an official stock page we can do a regular search
         return website
 
 # view the news!
@@ -63,23 +61,38 @@ Number of employees
 132,000[2] (2018)
 """
 
+
+# this function gets the financial information from each stock on wikipedia
 def wiki_stock(html):
 
     # doccumentation on elementtree
     # https://docs.python.org/2/library/xml.etree.elementtree.html
     root = ET.fromstring(html)
-    revenue_increase = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[16]/td/span')._children[0].tail
-    operating_income = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[17]/td/span').text
-    net_income = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[18]/td/span').text
-    total_assets = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[19]/td/span').text
-    total_equity = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[20]/td/span').text
-    #owner = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[21]/td/span').text
-    #employees = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[22]/td/span').text
 
-    print "revenue_increase = " + revenue_increase
-    print "operating_income = " + operating_income
-    print "net_income = " + net_income
-    print "total_assets = " + total_assets
-    print "total_equity = " + total_equity
-    #print "owner = " + owner
-    #print "employees = " + employees
+    # select the revenue index
+    # select the latitude and logitude of the business or stock
+    coordinates = root.find('.//*[@id="coordinates"]/span/a/span[3]/span[1]')
+    if coordinates != None:
+        coordinates = root.find('.//*[@id="coordinates"]/span/a/span[3]/span[1]').text
+
+    # find the table row "tr" number then assign row
+    rw = 0
+    for row in range(100):
+        index = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/'
+        if root.find(index).text == "Revenue":
+            rw = row
+            break
+
+    # check to see if the location exists (not sure about tail)
+    if root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw) + ']/td/span/a') is not None:
+        revenue_increase = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw) + ']/td/span/a').tail
+        operating_income = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw+1) + ']/td/span').text
+        net_income = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw+2) + ']/td/span').text
+        total_assets = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw+3) + ']/td/span').text
+        total_equity = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw+4) + ']/td/span').text
+
+        print "revenue_increase = " + revenue_increase
+        print "operating_income = " + operating_income
+        print "net_income = " + net_income
+        print "total_assets = " + total_assets
+        print "total_equity = " + total_equity
