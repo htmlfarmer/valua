@@ -1,3 +1,6 @@
+
+git config --global user.name "Asher Martin"
+git config --global user.email ashermartin@gmail.com
 git add *
 git commit -m "latest update"
 git push https://username:password@github.com/username/repository.git master
