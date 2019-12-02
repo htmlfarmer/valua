@@ -1,4 +1,19 @@
 
+
+# this part of the program will be valuable to study
+# List of towns and cities with 100,000 or more inhabitants
+def wiki_cities():
+    # first load all the cities from A to Z into a file
+    # read in each city
+    # read in the coordinates for the city
+    # save the name of the city and country to the file
+    return
+
+
+def wiki_location_estimate():
+
+    return
+
 import xml.etree.ElementTree as ET
 from request import REQUEST
 
@@ -12,23 +27,60 @@ from request import REQUEST
 # https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=                 &title=Special%3ASearch&go=Go&ns0=1
 
 
+from difflib import SequenceMatcher
+
+
+def similar(a, b):
+    return SequenceMatcher(None, a, b).ratio()
+
+
+def largest(arr):
+    # Initialize maximum element
+    max = arr[0]
+    n = len(arr)
+    # Traverse array elements from second
+    # and compare every element with
+    # current max
+    for index in range(1, n):
+        if arr[index] > max:
+            max = arr[i]
+
+    return index
+
 def wiki_research(keywords):
     # replace spaces with + and figure out what a %09 is
     name = keywords
     keywords = keywords.replace(" ", "+") # replace spaces with +'s
     keywords = keywords.replace("\t", "%09") # replace tabs
+    # this code does the initial search and checks the search results using various links
     url = 'https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=' + keywords + '&title=Special%3ASearch&go=Go&ns0=1'
     html = REQUEST(url)
     # study the doccument for the search results
     root = ET.fromstring(html)
     # get the first result of the search and test it to see if it is correct
+    # the most important step is to check which of the search results have the closest match
+    # check each search result and see if the title or whatever matches closely...
+    similarity = []
     index = './/*[@id="mw-content-text"]/div[3]/ul/li[1]/div[' + str(1) + ']/a'
-    search_result = root.find(index)
+    search_result = root.find(index) # was there a search result?
+
     # did the search result have good data or not
     if search_result is None: # this means that a search was successful
-        print name + " no further search xpath search test correct page!"
+        print name + " XPATH ERROR! Search Result Failed.  check to see if there was a search result?"
     else: # grab the search result and go to that website to read the stock market info
-        website = "https://en.wikipedia.org" + search_result.attrib["href"]
+        similarity = []
+        for i in range(10):  # check the first 10 search results
+            index = './/*[@id="mw-content-text"]/div[3]/ul/li[' + str(i+1) + ']/div[1]/a'
+            if root.find(index) is not None : #check to see if we have a search result
+                search_result = root.find(index).attrib["title"] # //*[@id="mw-content-text"]/div[3]/ul/li[1]/div[1]/a/span
+                similarity.append(similar(search_result, name))
+            else:
+                break #break from the loop
+        maxindex = similarity.index(max(similarity))
+        # now go to the similarity index and pick that one to forward and get the href http address
+        index = './/*[@id="mw-content-text"]/div[3]/ul/li[' + str(maxindex + 1) + ']/div[1]/a'
+        search_result = root.find(index).attrib["href"]
+        website = "https://en.wikipedia.org" + search_result
         html = REQUEST(website)
         wiki_stock(html) # since its an official stock page we can do a regular search
         return website
@@ -62,37 +114,71 @@ Number of employees
 """
 
 
-# this function gets the financial information from each stock on wikipedia
-def wiki_stock(html):
-
-    # doccumentation on elementtree
-    # https://docs.python.org/2/library/xml.etree.elementtree.html
-    root = ET.fromstring(html)
-
+# this function gets the latitude and logitude coodrinates
+# we need to add some code to do some more sophiticated search for the location
+def get_location(root):
     # select the revenue index
     # select the latitude and logitude of the business or stock
     coordinates = root.find('.//*[@id="coordinates"]/span/a/span[3]/span[1]')
     if coordinates != None:
         coordinates = root.find('.//*[@id="coordinates"]/span/a/span[3]/span[1]').text
+    else:
+        print "unable to find coordinates : latitude & logitude"
+    return coordinates
+
+
+from re import sub
+from decimal import Decimal
+
+
+def currencyxchange(text_money):
+    if text_money is not None:
+        value = Decimal(sub(r'[^\d.]', '', text_money))
+        # figure out if the number was a billion
+        value = float(value * 1000000000)
+        return value
+    else:
+        return None
+
+# this function finds the location of the financial data in wikipedia
+# for detailed info on xpath xml
+# https://docs.python.org/3/library/xml.etree.elementtree.html#supported-xpath-syntax
+def get_financial(root):
 
     # find the table row "tr" number then assign row
-    rw = 0
+    row = 0
     for row in range(100):
-        index = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/'
-        if root.find(index).text == "Revenue":
-            rw = row
-            break
+        xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/'
+        if root.find(xpath).text == "Revenue":
+            break # we found the correct row
 
-    # check to see if the location exists (not sure about tail)
-    if root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw) + ']/td/span/a') is not None:
-        revenue_increase = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw) + ']/td/span/a').tail
-        operating_income = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw+1) + ']/td/span').text
-        net_income = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw+2) + ']/td/span').text
-        total_assets = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw+3) + ']/td/span').text
-        total_equity = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(rw+4) + ']/td/span').text
+    # check to see if the xpath location exists (not sure about tail)
+    xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td/span/a'
+    if root.find(xpath) is not None:
+        xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td/span/a'
+        revenue_increase = currencyxchange(root.find(xpath).tail)
+        xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row+1) + ']/td/span'
+        operating_income = currencyxchange(root.find(xpath).text)
+        xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row+2) + ']/td/span'
+        net_income = currencyxchange(root.find(xpath).text)
+        xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row+3) + ']/td/span'
+        total_assets = currencyxchange(root.find(xpath).text)
+        xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row+4) + ']/td/span'
+        total_equity = currencyxchange(root.find(xpath).text)
 
-        print "revenue_increase = " + revenue_increase
-        print "operating_income = " + operating_income
-        print "net_income = " + net_income
-        print "total_assets = " + total_assets
-        print "total_equity = " + total_equity
+        money = {"revenue_increase": revenue_increase,
+                 "operating_income": operating_income,
+                 "net_income":  net_income,
+                 "total_assets": total_assets,
+                 "total_equity": total_equity}
+        return money
+
+
+# this function gets the financial information from each stock on wikipedia
+def wiki_stock(html):
+    # doccumentation on elementtree
+    # https://docs.python.org/2/library/xml.etree.elementtree.html
+    root = ET.fromstring(html)
+    coordinates = get_location(root)
+    financial = get_financial(root)
+    return financial
