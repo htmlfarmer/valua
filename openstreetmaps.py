@@ -1,3 +1,4 @@
+import xml.etree.ElementTree as ET
 from request import REQUEST
 
 def osm_search(keywords):
@@ -7,4 +8,11 @@ def osm_search(keywords):
     url = 'https://nominatim.openstreetmap.org/search.php?q=' + keywords + '&polygon_geojson=1&viewbox='
     html = REQUEST(url)
     # from the html look at the output and study which output is correct to get the internal data from the search
+
+    root = ET.fromstring(html)
+    # first search result xpath
+    # xpath = //*[@id="searchresults"]/div[1]/a
+    xpath = './/*[@id="searchresults"]/div[' + str(1) + ']/a'
+    search_result = root.find(xpath)  # was there a search result?
+
     return html

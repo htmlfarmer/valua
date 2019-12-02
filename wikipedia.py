@@ -1,4 +1,5 @@
-
+import xml.etree.ElementTree as ET
+from request import REQUEST
 
 # this part of the program will be valuable to study
 # List of towns and cities with 100,000 or more inhabitants
@@ -13,9 +14,6 @@ def wiki_cities():
 def wiki_location_estimate():
 
     return
-
-import xml.etree.ElementTree as ET
-from request import REQUEST
 
 # source: https://stackoverflow.com/questions/54516687/how-to-print-get-specific-lines-in-an-html-file-in-python-3
 # https://stackoverflow.com/questions/11709079/parsing-html-using-python
@@ -47,43 +45,45 @@ def largest(arr):
 
     return index
 
-def wiki_research(keywords):
-    # replace spaces with + and figure out what a %09 is
-    name = keywords
-    keywords = keywords.replace(" ", "+") # replace spaces with +'s
-    keywords = keywords.replace("\t", "%09") # replace tabs
-    # this code does the initial search and checks the search results using various links
-    url = 'https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=' + keywords + '&title=Special%3ASearch&go=Go&ns0=1'
-    html = REQUEST(url)
-    # study the doccument for the search results
-    root = ET.fromstring(html)
-    # get the first result of the search and test it to see if it is correct
-    # the most important step is to check which of the search results have the closest match
-    # check each search result and see if the title or whatever matches closely...
-    similarity = []
-    index = './/*[@id="mw-content-text"]/div[3]/ul/li[1]/div[' + str(1) + ']/a'
-    search_result = root.find(index) # was there a search result?
 
+#find which of the returned links can be used
+def wiki_study_search(keywords, root):
+    xpath = './/*[@id="mw-content-text"]/div[3]/ul/li[1]/div[' + str(1) + ']/a'
     # did the search result have good data or not
-    if search_result is None: # this means that a search was successful
-        print name + " XPATH ERROR! Search Result Failed.  check to see if there was a search result?"
+    if root.find(xpath) is None: # this means that a search was NOT successful
+        print "XPATH ERROR! Search Result Failed.  check to see if there was a search result?"
+        return None
     else: # grab the search result and go to that website to read the stock market info
         similarity = []
-        for i in range(10):  # check the first 10 search results
+        for i in range(20):  # check the first 10 search results
             index = './/*[@id="mw-content-text"]/div[3]/ul/li[' + str(i+1) + ']/div[1]/a'
             if root.find(index) is not None : #check to see if we have a search result
                 search_result = root.find(index).attrib["title"] # //*[@id="mw-content-text"]/div[3]/ul/li[1]/div[1]/a/span
-                similarity.append(similar(search_result, name))
+                similarity.append(similar(search_result, keywords))
             else:
                 break #break from the loop
         maxindex = similarity.index(max(similarity))
         # now go to the similarity index and pick that one to forward and get the href http address
         index = './/*[@id="mw-content-text"]/div[3]/ul/li[' + str(maxindex + 1) + ']/div[1]/a'
-        search_result = root.find(index).attrib["href"]
-        website = "https://en.wikipedia.org" + search_result
+        return "https://en.wikipedia.org" + root.find(index).attrib["href"]
+
+def wiki_research(keywords):
+    # replace spaces with + and figure out what a %09 is
+    search_terms = keywords.replace(" ", "+") # replace spaces with +'s
+    search_terms = keywords.replace("\t", "%09") # replace tabs
+    # this code does the initial search and checks the search results using various links
+    url = 'https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=' + search_terms + '&title=Special%3ASearch&go=Go&ns0=1'
+    html = REQUEST(url)
+    # study the document for the search results
+    root = ET.fromstring(html)
+    # get the first result of the search and test it to see if it is correct
+    # the most important step is to check which of the search results have the closest match
+    # check each search result and see if the title or whatever matches closely...
+    website = wiki_study_search(keywords, root)
+    if website is not None:
         html = REQUEST(website)
         wiki_stock(html) # since its an official stock page we can do a regular search
-        return website
+    return website
 
 # view the news!
 def wiki_news(html):
@@ -146,11 +146,15 @@ def currencyxchange(text_money):
 def get_financial(root):
 
     # find the table row "tr" number then assign row
-    row = 0
-    for row in range(100):
-        xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/'
-        if root.find(xpath).text == "Revenue":
-            break # we found the correct row
+    row = 0 # we dont know what row is the correct xpath for "Revenue" yet
+    xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/'
+    if root.find(xpath) is not None:
+        for row in range(100):
+            if root.find(xpath).text == "Revenue":
+                break # we found the correct row
+    else:
+        print "xpath not found for WIKI FINANCIALs"
+        return None
 
     # check to see if the xpath location exists (not sure about tail)
     xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td/span/a'

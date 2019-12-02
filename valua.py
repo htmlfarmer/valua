@@ -13,7 +13,7 @@ import census
 import google
 import zillow
 import wikipedia
-
+import openstreetmaps
 import time
 import datetime
 
@@ -74,6 +74,8 @@ def MAIN ():
     nasdaq = readfile("nasdaq.txt")
     sp100 = readfile("sp500.txt")
 
+#    openstreetmaps.osm_search("moscow idaho")
+
 # READ WIKIPEDIA WEBSITE URLS
 
     urls = [ \
@@ -88,11 +90,11 @@ def MAIN ():
 
     # search wikipedia for each stock in the nasdaq
     # and find the most relevant page
-    """
+
     for stock in nasdaq:
         print stock
         wikipedia.wiki_research(stock)
-    """
+    """"
     for stock in sp100:
         print stock
         wikipedia.wiki_research(stock)
@@ -109,6 +111,7 @@ def MAIN ():
             print "quora"
         else:
             print "other"
+    """
 
 # GET ALL THE LOCATION INFORMATION FROM THE HTML FILE
 
