@@ -21,17 +21,28 @@ def internet_on(address):
     print "INTERNET OFFLINE"
     return False
 
-
-def save_request(directory, filename, html):
+def file(directory, filename, html, type):
     import os.path
     #directory = './html/'
     #filename = "file.html"
+    filename = filename.replace('/','_')
+    filename = filename.replace('~', '-')
+    filename = filename + ".html"
     file_path = os.path.join(directory, filename)
-    if not os.path.isdir(directory): # os.path.exists('./html/file.html')
-        os.mkdir(directory)
-    file = open(file_path, "w")
-    file.write(html)
-    file.close()
+    if not os.path.isdir(directory):
+        os.mkdir(directory) # make a new directory
+    if type == "write":
+        file = open(file_path, type)
+        file.write(html)
+        file.close()
+    elif type == "read" and os.path.exists(file_path): # read the old file
+        file = open(file_path, type)
+        html = file.read()
+        file.close()
+    else:
+        return None
+    return html
+
 
 def REQUEST(address):
     #if internet_on(address):
@@ -39,16 +50,19 @@ def REQUEST(address):
     socket.setdefaulttimeout(timeout)
     user_agent = 'VLA. + RESEARCH SCIENCE (Linux/MacOS; West Coast, USA)'
     headers = { 'User-Agent' : user_agent }
+    req = urllib2.Request(url=address, headers=headers)
     #address = "http://ashercmartin.wordpress.com/links/"
-    print "HTTP TEXT REQUEST: " + address
-    req = urllib2.Request(url = address, headers = headers)
-    response = urllib2.urlopen(req)
-    html = response.read()
+    #filename = address.split("?")[0].split("/")[-1]
+    html = file("./html/", address, "", "read")
+    if html is None:
+        response = urllib2.urlopen(req)
+        html = response.read()
+        file("./html/", address, html, "write")
+        print " REQUEST (ONLINE): " + address
+    else:
+        print "REQUEST (OFFLINE): " + address
     import nlp
     nlp.frequency(html)
-
-    filename = address.split("?")[0].split("/")[-1]
-    save_request("./html/", filename, html)
 
     # todo: add some code later if the request fails to still save a file
     return html
