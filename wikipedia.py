@@ -99,6 +99,7 @@ def wiki_study_search(keywords, root):
         return "https://en.wikipedia.org" + root.find(index).attrib["href"]
 
 def wiki_research(keywords):
+    print "WIKIPEDIA RESEARCH on: " + keywords
     # replace spaces with + and figure out what a %09 is
     search_terms = keywords.replace(" ", "+") # replace spaces with +'s
     search_terms = search_terms.replace("\t", "%09") # replace tabs
@@ -113,7 +114,9 @@ def wiki_research(keywords):
     website = wiki_study_search(keywords, root)
     if website is not None:
         html = REQUEST(website)
-        wiki_stock(html) # since its an official stock page we can do a regular search
+        wiki_stock(html)
+    else:
+        print "STOCK INFO MISSING FOR WIKIPEDIA: " + keywords# since its an official stock page we can do a regular search
     return website
 
 # view the news!
@@ -211,6 +214,7 @@ def get_financial(root):
 
 # this function gets the financial information from each stock on wikipedia
 def wiki_stock(html):
+    print "WIKIPEDIA STOCK INFO FOUND!"
     # doccumentation on elementtree
     # https://docs.python.org/2/library/xml.etree.elementtree.html
     root = ET.fromstring(html)
