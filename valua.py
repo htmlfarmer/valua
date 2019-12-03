@@ -92,7 +92,7 @@ def MAIN ():
     # and find the most relevant page
 
     for stock in nasdaq:
-        print stock
+        print "NASDAQ SEARCH: " + stock
         wikipedia.wiki_research(stock)
     """"
     for stock in sp100:
