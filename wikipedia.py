@@ -171,7 +171,24 @@ def get_location(root):
     if coordinates != None:
         coordinates = root.find('.//*[@id="coordinates"]/span/a/span[3]/span[1]').text
     else:
-        print "unable to find coordinates : latitude & logitude"
+        # search for Headquarters //*[@id="mw-content-text"]/div/table[1]/tbody/tr[7]/td/text()[1]
+        row = 0  # we dont know what row is the correct xpath for "Revenue" yet
+        xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td/'
+        if root.find(xpath) is not None:
+            for row in range(50):  # todo bad idea to hard code this think about this later
+                xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/'
+                if root.find(xpath).text == "Headquarters":
+                    xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td'
+                    headquarters = root.find(xpath).text
+                    xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td/div[' + str(1) + ']/a'
+                    if root.find(xpath) is not None:
+                        headquarters = headquarters + " " + root.find(xpath).text
+                    import openstreetmaps
+                    coordinates = openstreetmaps.OPEN_XML_GEOCODE(headquarters)
+                    print "HEAD QUARTERS LAT/LON: " + str(coordinates)
+                    break  # we found the correct row
+        else:
+            print "unable to find coordinates : latitude & logitude"
     return coordinates
 
 

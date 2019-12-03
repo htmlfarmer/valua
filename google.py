@@ -4,14 +4,14 @@ GOOGLE_API_KEY = "AIzaSyAD3AiNwlR6x-rHjYGbp277Whqf3t6LKvQ"
 
 def GOOGLE_PLACES_DETAILS(place_id):
     url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=" + GOOGLE_API_KEY
-    json = GET_REQUEST(url)
+    json = REQUEST(url)
     return json
 
 # EXAMPLE: https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
 def GOOGLE_GEOCODE(address):
     address = address.replace(" ", "+")
     url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + GOOGLE_API_KEY
-    json = GET_REQUEST(url)
+    json = REQUEST(url)
     start = json.find("\"location\" : ")
     if(start != -1):
         start = json.find("\"lat\" : ", start)
@@ -69,7 +69,7 @@ def GOOGLE_PLACES(location):
         url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" \
         + location["latitude"] + "," + location["longitude"] + "&radius=" + radius + "&name=" \
         + "&sensor=false&key=" + GOOGLE_API_KEY
-        json = GET_REQUEST(url)
+        json = REQUEST(url)
         GOOGLE_PLACES_RATINGS(json)
         GOOGLE_PLACE_TYPES(json)
         print json

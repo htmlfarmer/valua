@@ -1,6 +1,43 @@
 import xml.etree.ElementTree as ET
 from request import REQUEST
 
+# XML EXAMPLE
+# EXAMPLE https://nominatim.openstreetmap.org/search?q=135+pilkington+avenue,+birmingham&format=xml&polygon=1&addressdetails=1
+def OPEN_XML_GEOCODE(address):
+    address = address.replace(" ", "+")
+    address = address.replace("(", "+")
+    address = address.replace(")", "+")
+    url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=xml&polygon=1&addressdetails=1"
+    url = "https://nominatim.openstreetmap.org/search.php?q=1+Hacker+Way+Menlo+Park%2C+California&format=xml&polygon=1&addressdetails=1"
+    XML = REQUEST(url)
+    # lat='37.4851868' lon='-122.1478019
+    start = XML.find("lat=")
+    end = XML.find("\' ", start)
+    latitude = XML[start+5:end].replace('\n', '').replace(' ', '')
+    start = XML.find("lon=")
+    end = XML.find("\' ", start)
+    longitude = XML[start+5:end].replace('\n', '').replace(' ', '')
+    geocode = {"longitude" : longitude, "latitude" : latitude}
+    return geocode
+
+# GEO JSON
+# API https://nominatim.org/release-docs/develop/api/Search/
+# EXAMPLE: https://nominatim.openstreetmap.org/?addressdetails=1&q=bakery+in+berlin+wedding&format=json&limit=1
+def OPEN_GEOCODE(address):
+    address = address.replace(" ", "+")
+    address = address.replace("(", "+")
+    address = address.replace(")", "+")
+    url = "https://nominatim.openstreetmap.org/?addressdetails=1&q=" + address + "&format=json&limit=1"
+    json = REQUEST(url)
+    start = json.find("\"lat\":\"")
+    end = json.find("\",", start)
+    latitude = json[start+7:end].replace('\n', '').replace(' ', '')
+    start = json.find("\"lon\":\"")
+    end = json.find("\",", start)
+    longitude = json[start+7:end].replace('\n', '').replace(' ', '')
+    geocode = {"longitude" : longitude, "latitude" : latitude}
+    return geocode
+
 
 def osm_features(latlon):
     #https://www.openstreetmap.org/query?lat=-19.9168&lon=-43.9332

@@ -41,13 +41,11 @@ def CENSUS_POPULATION ():
 
 # FAQ: https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html#_Toc379292359
 # example: https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=4600+Silver+Hill+Rd%2C+Suitland%2C+MD+20746&benchmark=9&format=json
-def CENSUS_GEOCODE (address, citystatezip):
+def CENSUS_GEOCODE (address):
     address = address.replace(" ", "+")
     address = address.replace(",", "%2C")
-    citystatezip = citystatezip.replace(" ", "+")
-    citystatezip = citystatezip.replace(",", "%2C")
-    url = "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=" + address + "+" + citystatezip + "&benchmark=9&format=json"
-    json = GET_REQUEST(url).replace(" ", "")
+    url = "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=" + address + "&benchmark=9&format=json"
+    json = REQUEST(url)
     # find the logitude and latitude in the JSON reply
     start = json.find("\"x\":")
     if(start != -1):
