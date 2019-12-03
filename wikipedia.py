@@ -8,6 +8,37 @@ def wiki_cities():
     # read in each city
     # read in the coordinates for the city
     # save the name of the city and country to the file
+
+    URL_CITY_ARRAY = ['https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_A', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_B', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_C', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_D', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_E', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_F', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_G', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_H', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_I', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_J', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_K', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_L', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_M', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_N', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_O', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_P', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Q', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_R', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_S', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_T', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_U', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_V', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_W', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_X', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Y', \
+                      'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Z']
+    for city in URL_CITY_ARRAY:
+        html = REQUEST(city)
+    root = ET.fromstring(html)
+
     return
 
 
@@ -70,7 +101,7 @@ def wiki_study_search(keywords, root):
 def wiki_research(keywords):
     # replace spaces with + and figure out what a %09 is
     search_terms = keywords.replace(" ", "+") # replace spaces with +'s
-    search_terms = keywords.replace("\t", "%09") # replace tabs
+    search_terms = search_terms.replace("\t", "%09") # replace tabs
     # this code does the initial search and checks the search results using various links
     url = 'https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=' + search_terms + '&title=Special%3ASearch&go=Go&ns0=1'
     html = REQUEST(url)

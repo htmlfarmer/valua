@@ -1,6 +1,11 @@
 import xml.etree.ElementTree as ET
 from request import REQUEST
 
+
+def osm_features(latlon):
+    #https://www.openstreetmap.org/query?lat=-19.9168&lon=-43.9332
+    return
+
 def osm_search(keywords):
     name = keywords
     keywords = keywords.replace(" ", "+") # replace spaces with +'s
