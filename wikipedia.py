@@ -126,7 +126,7 @@ def wiki_research(keywords):
     website = wiki_study_search(keywords, root)
     if website is not None:
         html = REQUEST(website)
-        wiki_stock(html)
+        wiki_stock(html) # we can not use the old root because we need a new website.
     else:
         print "STOCK INFO MISSING FOR WIKIPEDIA: " + keywords  # since its an official stock page we can do a regular search
     return website
@@ -161,6 +161,32 @@ Number of employees
 132,000[2] (2018)
 """
 
+def text_geocoder(text):
+    # u'37.3349\xc2N 122.0090\xc2W'
+    latitude = ""
+    logitude = ""
+    geocode = {"latitude": latitude, "logitude": logitude}
+    # find LATITUDE : NORTH or SOUTH
+    start = 0
+    end = 0
+    if text.find("N") is not -1:
+        start = 0
+        end = text.find("N ", start)
+        latitude = text[start:end-1].replace('\n', '').replace(' ', '')
+    if text.find("S") is not -1:
+        start = 0
+        end = text.find("S ", start)
+        latitude = "-" + text[start:end-1].replace('\n', '').replace(' ', '')
+    # find LOGITUDE : WEST or EAST
+    start = end + 1  # end of N or S
+    if text.find("W") is not -1:
+        end = text.find("W", start + 1)
+        longitude = "-" + text[start:end-1].replace('\n', '').replace(' ', '')
+    if text.find("E") is not -1:
+        end = text.find("W", start + 1)
+        longitude = text[start:end - 1].replace('\n', '').replace(' ', '')
+    geocode = {"longitude": longitude, "latitude": latitude}
+    return geocode
 
 # this function gets the latitude and logitude coodrinates
 # we need to add some code to do some more sophiticated search for the location
@@ -168,9 +194,11 @@ def get_location(root):
     # select the revenue index
     # select the latitude and logitude of the business or stock
     coordinates = root.find('.//*[@id="coordinates"]/span/a/span[3]/span[1]')
-    if coordinates != None:
-        coordinates = root.find('.//*[@id="coordinates"]/span/a/span[3]/span[1]').text
-    else:
+    if coordinates is not None:
+        text = root.find('.//*[@id="coordinates"]/span/a/span[3]/span[1]').text
+        geocode = text_geocoder(text)
+        print "FOUND EASY COORDINATES: " + str(geocode)
+    else: # we need to look deeper in the text file for the geocode (hopefully not too carefully
         # search for Headquarters //*[@id="mw-content-text"]/div/table[1]/tbody/tr[7]/td/text()[1]
         row = 0  # we dont know what row is the correct xpath for "Revenue" yet
         xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td/'
