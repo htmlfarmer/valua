@@ -185,7 +185,6 @@ def get_location(root):
                         headquarters = headquarters + " " + root.find(xpath).text
                     import openstreetmaps
                     coordinates = openstreetmaps.OPEN_XML_GEOCODE(headquarters)
-                    print "HEAD QUARTERS LAT/LON: " + str(coordinates)
                     break  # we found the correct row
         else:
             print "unable to find coordinates : latitude & logitude"
@@ -252,6 +251,6 @@ def wiki_stock(html):
     # https://docs.python.org/2/library/xml.etree.elementtree.html
     root = ET.fromstring(html)
     coordinates = get_location(root)
-    print "COORDINATES (lat/lon): " + coordinates
+    print "COORDINATES (lat/lon): " + str(coordinates)
     financial = get_financial(root)
     return financial

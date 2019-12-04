@@ -5,10 +5,10 @@ from request import REQUEST
 # EXAMPLE https://nominatim.openstreetmap.org/search?q=135+pilkington+avenue,+birmingham&format=xml&polygon=1&addressdetails=1
 def OPEN_XML_GEOCODE(address):
     address = address.replace(" ", "+")
-    address = address.replace("(", "+")
-    address = address.replace(")", "+")
+    import re
+    address = re.sub('\(.*\)', '', address) # replace everything between () with nothing
+    address = re.sub('\+{2,}', '+', address)
     url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=xml&polygon=1&addressdetails=1"
-    url = "https://nominatim.openstreetmap.org/search.php?q=1+Hacker+Way+Menlo+Park%2C+California&format=xml&polygon=1&addressdetails=1"
     XML = REQUEST(url)
     # lat='37.4851868' lon='-122.1478019
     start = XML.find("lat=")
