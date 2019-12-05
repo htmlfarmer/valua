@@ -1,7 +1,9 @@
-
+# NLP - TOPIC MODELING
 # a very good into on word frequency programming
 # https://programminghistorian.org/en/lessons/counting-frequencies
 # NATURAL LAGUAGE PROCESSING LIBRARY
+
+# NEEDED LIBRARY Install NLTK: run "pip install --user -U nltk" and "pip install --user -U numpy"
 
 stopwords = ['a', 'about', 'above', 'across', 'after', 'afterwards']
 stopwords += ['again', 'against', 'all', 'almost', 'alone', 'along']
@@ -110,6 +112,7 @@ def frequency(html):
     wordlist = removeStopwords(fullwordlist, stopwords)
     dictionary = wordListToFreqDict(wordlist)
     sorteddict = sortFreqDict(dictionary)
+    return sorteddict
 
     #for s in sorteddict:
     #    print str(s)

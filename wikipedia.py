@@ -1,6 +1,14 @@
 import xml.etree.ElementTree as ET
 from request import FILE_REQUEST
+import nlp
 
+
+
+def wiki_save_xpath(root, xpath):
+    # xpath = ".//*[@id="mw-content-text"]/div/table/tbody/tr[2]/td[1]/a"
+    address = "https://en.wikipedia.org" + root.find(xpath).attrib["href"]
+    html = FILE_REQUEST(address, "./city/")
+    return html # rememmber this is a NEW root! not the same at the previous.
 
 # this part of the program will be valuable to study
 # List of towns and cities with 100,000 or more inhabitants
@@ -41,6 +49,19 @@ def wiki_cities():
     for city in URL_CITY_ARRAY:
         html = FILE_REQUEST(city, "./city/")
         root = ET.fromstring(html)
+        for index in range(2, 2000): #todo add code to check the correct END index
+            if index == 267:
+                print "WOW SLOW DOWN"
+            xpath_city = './/*[@id="mw-content-text"]/div/table/tbody/tr[' + str(index) + ']/td[1]/a'
+            xpath_country = './/*[@id="mw-content-text"]/div/table/tbody/tr[' + str(index) + ']/td[2]/a'
+            if xpath_city is None:
+                break # we found all the cities and countries!
+            print "    CITY = " + root.find(xpath_city).text
+            print " COUNTRY = " + root.find(xpath_country).text
+            html_city = wiki_save_xpath(root, xpath_city)
+            html_country = wiki_save_xpath(root, xpath_country)
+            print str(nlp.frequency(html_city))
+            print str(nlp.frequency(html_country))
         print "FILE REQUEST to ./city/"
 
     return
@@ -100,15 +121,14 @@ def wiki_study_search(keywords, root):
         for i in range(20):  # check the first 10 search results
             index = './/*[@id="mw-content-text"]/div[3]/ul/li[' + str(i + 1) + ']/div[1]/a'
             if root.find(index) is not None:  # check to see if we have a search result
-                search_result = root.find(index).attrib[
-                    "title"]  # //*[@id="mw-content-text"]/div[3]/ul/li[1]/div[1]/a/span
+                search_result = root.find(index).attrib["title"]  # //*[@id="mw-content-text"]/div[3]/ul/li[1]/div[1]/a/span
                 similarity.append(similar(search_result, keywords))
             else:
                 break  # break from the loop
         maxindex = similarity.index(max(similarity))
         # now go to the similarity index and pick that one to forward and get the href http address
-        index = './/*[@id="mw-content-text"]/div[3]/ul/li[' + str(maxindex + 1) + ']/div[1]/a'
-        website_address = "https://en.wikipedia.org" + root.find(index).attrib["href"]
+        xpath = './/*[@id="mw-content-text"]/div[3]/ul/li[' + str(maxindex + 1) + ']/div[1]/a'
+        website_address = "https://en.wikipedia.org" + root.find(xpath).attrib["href"]
         return website_address
 
 
