@@ -2,73 +2,25 @@
 # November 2019
 # About: this program is designed to help search for news and evaluate it.
 
-# Warning: The xml.etree.ElementTree module is not secure against maliciously constructed data.
-# If you need to parse untrusted or unauthenticated data see XML vulnerabilities.
-
-#import urllib
-#import re
-#import xml.etree.ElementTree as ET
-
+import datetime
+import wikipedia
 import census
 import google
 import zillow
-import wikipedia
 import openstreetmaps
 import time
-import datetime
-
-"""
-
-"""
-
-print "==================================================="
-print "  REPORT # " , datetime.datetime.now()
-print "    DATE : ", datetime.date.today().strftime("%B") + " " + datetime.date.today().strftime("%d") + ", " + datetime.date.today().strftime("%Y")
-print "==================================================="
-
-from request import REQUEST
-
-"""
-# Do a Wikipedia Lookup Based on geolocation (Cape Cod, MA) http://api.geonames.org/findNearbyWikipedia?lat=41.618116&lng=-70.485361&username=demo
-wikihtml = GET_REQUEST("http://api.geonames.org/findNearbyWikipedia?lat="+ str(lat) +"&lng="+ str(lng) + "&username=asolr")
-wiki = ET.fromstring(wikihtml) # if you need the xml data type
-print ET.tostring(wiki)
-"""
-
-# TODO: request API + https://stackoverflow.com/questions/2018026/what-are-the-differences-between-the-urllib-urllib2-and-requests-module
-
-# COLLABORATORS:
-
-# MAIN SEARCH ENGINE
-def SEARCH(url):
-    print url
-    html = GET_REQUEST(url)
-    wikipedia.findNews(html)
-    return html
 
 
-def writefile(filename, text):
-    file = open(filename, "w")
-    file.write(text)
-    file.close()
-
-
-# read in a file and print it and process the data
-def readfile(filename):
-    lines = []
-    with open(filename) as file:
-        for line in file:
-            line = line.strip()  # preprocess line
-            #print (line)
-            lines.append(line)  # storing everything in memory!
-    return lines
 
 #############################################
 #          MAIN PROGRAM OUTLINE
 #############################################
-
+# the main goal of this program is to take in a user input and then search all the cities on earth
+# and find the geo locations and city names of the most likely areas
 
 def MAIN ():
+    wikipedia.wiki_cities()
+
 
 # READ IN ALL SP500 and NASDAQ INFO
     nasdaq = readfile("nasdaq.txt")
@@ -91,10 +43,12 @@ def MAIN ():
     # search wikipedia for each stock in the nasdaq
     # and find the most relevant page
 
+
+""""
     for stock in nasdaq:
         print "NASDAQ SEARCH: " + stock
         wikipedia.wiki_research(stock)
-    """"
+
     for stock in sp100:
         print stock
         wikipedia.wiki_research(stock)
@@ -147,5 +101,48 @@ def MAIN ():
 
 # http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
 # DATABASE: http://ec.europa.eu/eurostat/data/database
+
+
+print "==================================================="
+print "  REPORT # " , datetime.datetime.now()
+print "    DATE : ", datetime.date.today().strftime("%B") + " " + datetime.date.today().strftime("%d") + ", " + datetime.date.today().strftime("%Y")
+print "==================================================="
+
+from request import REQUEST
+
+"""
+# Do a Wikipedia Lookup Based on geolocation (Cape Cod, MA) http://api.geonames.org/findNearbyWikipedia?lat=41.618116&lng=-70.485361&username=demo
+wikihtml = GET_REQUEST("http://api.geonames.org/findNearbyWikipedia?lat="+ str(lat) +"&lng="+ str(lng) + "&username=asolr")
+wiki = ET.fromstring(wikihtml) # if you need the xml data type
+print ET.tostring(wiki)
+"""
+
+# TODO: request API + https://stackoverflow.com/questions/2018026/what-are-the-differences-between-the-urllib-urllib2-and-requests-module
+
+# COLLABORATORS:
+
+# MAIN SEARCH ENGINE
+def SEARCH(url):
+    print url
+    html = GET_REQUEST(url)
+    wikipedia.findNews(html)
+    return html
+
+
+def writefile(filename, text):
+    file = open(filename, "w")
+    file.write(text)
+    file.close()
+
+
+# read in a file and print it and process the data
+def readfile(filename):
+    lines = []
+    with open(filename) as file:
+        for line in file:
+            line = line.strip()  # preprocess line
+            #print (line)
+            lines.append(line)  # storing everything in memory!
+    return lines
 
 MAIN()

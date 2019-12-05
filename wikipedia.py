@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from request import REQUEST
+from request import FILE_REQUEST
 
 
 # this part of the program will be valuable to study
@@ -37,9 +37,11 @@ def wiki_cities():
         'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_X', \
         'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Y', \
         'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Z']
+
     for city in URL_CITY_ARRAY:
-        html = REQUEST(city)
-    root = ET.fromstring(html)
+        html = FILE_REQUEST(city, "./city/")
+        root = ET.fromstring(html)
+        print "FILE REQUEST to ./city/"
 
     return
 

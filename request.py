@@ -1,6 +1,19 @@
 import urllib2
 import socket # needed for timeout
 
+# HTTP REQUEST of some address
+def REQUEST(address):
+    timeout = 60
+    socket.setdefaulttimeout(timeout)
+    user_agent = 'VALUA. + NLP RESEARCH SCIENCE (Linux/MacOS; Pacific North West Coast, USA)'
+    headers = { 'User-Agent' : user_agent }
+    req = urllib2.Request(url=address, headers=headers)
+    response = urllib2.urlopen(req)
+    html = response.read()
+    print "REQUEST (ONLINE): " + address
+    return html
+
+
 def writefile(filename, text):
     file = open(filename, "w")
     file.write(text)
@@ -12,7 +25,7 @@ def readfile(filename):
     return file.read()
 
 
-def internet_on(address):
+def online_or_offline():
     for timeout in [1,5,10,15]:
         try:
             response=urllib2.urlopen(address,timeout=timeout)
@@ -21,51 +34,63 @@ def internet_on(address):
     print "INTERNET OFFLINE"
     return False
 
-def file(directory, filename, html, type):
-    import os.path
-    #directory = './html/'
-    #filename = "file.html"
+
+import os.path
+def FILE_IO(file):
+    # local variables from {dictionary}
+    directory = file["directory"]
+    filename = file["filename"]
+    text = file["data"]
+    type = file["type"]
+    # correct any filename problems
     filename = filename.replace('/','_')
     filename = filename.replace('~', '-')
     filename = filename + ".html"
     file_path = os.path.join(directory, filename)
+    # check to see if the directory exists
     if not os.path.isdir(directory):
         os.mkdir(directory) # make a new directory
     if type == "write":
         file = open(file_path, type)
-        file.write(html)
+        file.write(text)
         file.close()
     elif type == "read" and os.path.exists(file_path): # read the old file
         file = open(file_path, type)
-        html = file.read()
+        text = file.read()
         file.close()
     else:
         return None
-    return html
+    return text
 
 
-def REQUEST(address):
-    #if internet_on(address):
-    timeout = 60
-    socket.setdefaulttimeout(timeout)
-    user_agent = 'VLA. + RESEARCH SCIENCE (Linux/MacOS; West Coast, USA)'
-    headers = { 'User-Agent' : user_agent }
-    req = urllib2.Request(url=address, headers=headers)
-    #address = "http://ashercmartin.wordpress.com/links/"
-    #filename = address.split("?")[0].split("/")[-1]
-    html = file("./html/", address, "", "read")
+# check to see if the file exists if it does return the html from the file
+# if not write a new file and return the html
+def FILE_REQUEST(address, directory):
+    html = READ_FILE_REQUEST(address, directory)
     if html is None:
-        response = urllib2.urlopen(req)
-        html = response.read()
-        file("./html/", address, html, "write")
-        print " REQUEST (ONLINE): " + address
-    else:
-        print "REQUEST (OFFLINE): " + address
-    import nlp
-    nlp.frequency(html)
-
-    # todo: add some code later if the request fails to still save a file
+        html = WRITE_FILE_REQUEST(address, directory)
     return html
-    #else:
-    #    print "WARNING: CONNECTION OFFLINE READING LOCAL FILE"
-    #    return readfile("file.html")
+
+# read a http request from a directory
+def READ_FILE_REQUEST(address, directory):
+    filename = address
+    data = {"directory": directory,
+            "filename": filename,
+            "data" : "",
+            "type": "read"}
+    html = FILE_IO(data)
+    if html is None:
+        print "WARNING NO LOCAL COPY OF WEBSITE: " + filename
+        #html = REQUEST(address) # dont always read the file its just a read
+    return html
+
+
+# save a http request to a directory
+def WRITE_FILE_REQUEST(address, directory):
+    html = REQUEST(address)
+    data = {"directory": directory,
+            "filename": address,
+            "data": html,
+            "type": "write"}
+    FILE_IO(data)
+    return html
