@@ -1,4 +1,6 @@
 # valua
 VALUA. (prototype) 
 
-http://htmlfarmer.github.io/valua/
+GEOLOCATION LATITUDE AND LOGITUDE
+
+VALUATION
