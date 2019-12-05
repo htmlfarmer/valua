@@ -14,27 +14,6 @@ def REQUEST(address):
     return html
 
 
-def writefile(filename, text):
-    file = open(filename, "w")
-    file.write(text)
-    file.close()
-
-
-def readfile(filename):
-    file = open(filename, "r")
-    return file.read()
-
-
-def online_or_offline():
-    for timeout in [1,5,10,15]:
-        try:
-            response=urllib2.urlopen(address,timeout=timeout)
-            return True
-        except urllib2.URLError as err: pass
-    print "INTERNET OFFLINE"
-    return False
-
-
 import os.path
 def FILE_IO(file):
     # local variables from {dictionary}
@@ -43,8 +22,8 @@ def FILE_IO(file):
     text = file["data"]
     type = file["type"]
     # correct any filename problems
+    filename = filename[filename.rfind("/")+1:]
     filename = filename.replace('/','_')
-    filename = filename.replace('~', '-')
     filename = filename + ".html"
     file_path = os.path.join(directory, filename)
     # check to see if the directory exists
@@ -81,7 +60,6 @@ def READ_FILE_REQUEST(address, directory):
     html = FILE_IO(data)
     if html is None:
         print "WARNING NO LOCAL COPY OF WEBSITE: " + filename
-        #html = REQUEST(address) # dont always read the file its just a read
     return html
 
 
