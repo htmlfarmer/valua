@@ -19,6 +19,7 @@ def wiki_cities():
     # save the name of the city and country to the file
 
     URL_CITY_ARRAY = [
+        'https://en.wikipedia.org/wiki/Moscow,_Idaho', \
         'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_A', \
         'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_B', \
         'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_C', \

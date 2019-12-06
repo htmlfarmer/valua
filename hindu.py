@@ -1,7 +1,7 @@
 # Python code to illustrate parsing of XML files
 # importing the required modules
 import csv
-import requests
+import request
 import xml.etree.ElementTree as ET
 
 
@@ -10,7 +10,7 @@ def loadRSS():
     url = 'http://www.hindustantimes.com/rss/topnews/rssfeed.xml'
 
     # creating HTTP response object from given url
-    resp = requests.get(url)
+    resp = request.REQUEST(url)
 
     # saving the xml file
     with open('topnewsfeed.xml', 'wb') as f:

@@ -1,9 +1,23 @@
 # NLP - TOPIC MODELING
 # a very good into on word frequency programming
 # https://programminghistorian.org/en/lessons/counting-frequencies
-# NATURAL LAGUAGE PROCESSING LIBRARY
+# NATURAL LANGUAGE PROCESSING LIBRARY
+
+import re
+
+# NATURAL LANGUAGE PROCESSING
+# a great source of info for NLP https://www.nltk.org/book/
 
 # NEEDED LIBRARY Install NLTK: run "pip install --user -U nltk" and "pip install --user -U numpy"
+
+
+class NLP:
+  def __init__(self, name, age):
+    self.name = name
+    self.age = age
+
+  def myfunc(abc):
+    print("Hello my name is " + abc.name)
 
 stopwords = ['a', 'about', 'above', 'across', 'after', 'afterwards']
 stopwords += ['again', 'against', 'all', 'almost', 'alone', 'along']
@@ -75,13 +89,14 @@ def removeStopwords(wordlist, stopwords):
     return clean
 
 
+# a good regex checker is available at https://pythex.org
 def html2text(html):
-    #url = 'http://www.oldbaileyonline.org/browse.jsp?id=t17800628-33&div=t17800628-33'
-    #response = urllib.request.urlopen(url)
-    #html = response.read()
-    import re
+    # this first pattern removes the javascript <script> tags
     pattern = r"(?is)<script[^>]*>(.*?)</script>"
     html = re.sub(pattern, '', html) # remove script tags
+    # remove all the CSS styles
+    pattern = r"(?is)<style[^>]*>(.*?)</style>"
+    html = re.sub(pattern, '', html)  # remove script tags
     text = re.sub(r'<[^>]*?>', '', html)
     text = text.lower()
     return text
@@ -112,9 +127,6 @@ def frequency(html):
     wordlist = removeStopwords(fullwordlist, stopwords)
     dictionary = wordListToFreqDict(wordlist)
     sorteddict = sortFreqDict(dictionary)
+    p1 = NLP("John", 36)
+    p1.myfunc()
     return sorteddict
-
-    #for s in sorteddict:
-    #    print str(s)
-
-    return
