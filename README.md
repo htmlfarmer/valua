@@ -9,7 +9,7 @@ NLP and GEOCODING in python/html/text
 NLP to automatically detect a geolocation of any website article.  
 APPLICATIONS: 
 
-GEO LOCATION news monitoring, 
+GEO LOCATION news monitoring 
 GEO LOCATION social media
 GEO LOCATION computer security monitoring 
 GEO LOCATION general brand monitoring 
