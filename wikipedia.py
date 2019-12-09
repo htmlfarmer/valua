@@ -47,6 +47,9 @@ def wiki_cities():
         'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Y', \
         'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Z']
 
+
+# there is a really cool graph that i should think about using for topic modeling
+# https://www.machinelearningplus.com/nlp/topic-modeling-visualization-how-to-present-results-lda-models/
     for city in URL_CITY_ARRAY:
         html = FILE_REQUEST(city, "./city/")
         root = ET.fromstring(html)

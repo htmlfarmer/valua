@@ -3,6 +3,17 @@
 # https://programminghistorian.org/en/lessons/counting-frequencies
 # NATURAL LANGUAGE PROCESSING LIBRARY
 
+"""
+Noun phrase (NP): These are phrases where a noun acts as the head word. Noun phrases act as a subject or object to a verb.
+Verb phrase (VP): These phrases have a verb acting as the head word.
+Adjective phrase (ADJP): These are phrases with an adjective as the head word. Their main role is to describe or qualify nouns.
+Adverb phrase (ADVP): Adverb phrases are used as modifiers for nouns, verbs, or adverbs themselves by providing further details.
+Prepositional phrase (PP): These phrases usually contain lexical components like nouns, pronouns, and so on.
+"""
+
+# it maybe wise to use a sqlite3 implementation rather then JSON
+# https://stackoverflow.com/questions/11747527/how-to-connect-javascript-to-python-sharing-data-with-json-format-in-both-ways
+
 import re
 
 # NATURAL LANGUAGE PROCESSING
@@ -12,9 +23,11 @@ import re
 
 
 class NLP:
-  def __init__(self, name, age):
-    self.name = name
-    self.age = age
+  def __init__(self, text):
+    self.fullwordlist = stripNonAlphaNum(text)
+    self.wordlist = removeStopwords(self.fullwordlist, stopwords)
+    self.dictionary = wordListToFreqDict(self.wordlist)
+    self.sorteddict = sortFreqDict(self.dictionary)
 
   def myfunc(abc):
     print("Hello my name is " + abc.name)
