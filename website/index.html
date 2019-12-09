@@ -25,14 +25,21 @@
 
     </div>
 
+    <select id="MapSelection" onchange="SelectMap(this, event)">
+      <option value="WorldMap">World Map</option>
+      <option value="PopulationMap">Population Map</option>
+      <option value="TopologicalMap">Topological Map</option>
+      <option value="VegetationMap">Vegetation Map</option>
+    </select>
+
   </div>
 
   <!-- there are a lot of other side navigations
   https://www.w3schools.com/howto/howto_css_sidenav_buttons.asp -->
   <div class="map">
-    <h1>EARTH IMAGE</h1>
+    <h1>EARTH IMAGE</h1><span id='coord'></span>
     <p>
-      <img id = "worldmap" style="width: 100%;" src = "world_map.jpg" alt = "NASA WORLD MAP" />
+      <img id="MapImage" onmousemove="XY(this,event)" style="width: 100%;" src = "world.jpg" alt = "NASA WORLD MAP" />
     </p>
   </div>
 
