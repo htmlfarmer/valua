@@ -10,6 +10,22 @@ def REQUEST(address):
     return html
 
 
+def WRITEFILE(filename, text):
+    file = open(filename, "w")
+    file.write(text)
+    file.close()
+
+
+# read in a file and print it and process the data
+def READFILE(filename):
+    lines = []
+    with open(filename) as file:
+        for line in file:
+            line = line.strip()  # preprocess line
+            #print (line)
+            lines.append(line)  # storing everything in memory!
+    return lines
+
 import os.path
 def FILE_IO(file):
     # local variables from {dictionary}

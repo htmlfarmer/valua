@@ -52,62 +52,6 @@ URL_CITY_ARRAY = [
 
 CIA_FACT_BOOK = ['https://www.cia.gov/library/publications/the-world-factbook/geos/us.html']
 
-class Website:
-  def __init__(self, url):
-    self.url = url
-    self.html = ""
-    self.xml = ""
-    self.path = ""
-
-  def myfunc(abc):
-    print("Hello my name is " + abc.name)
-
-
-def main():
-    """
-    cities = []
-    fact_book = []
-    #for country in CIA_FACT_BOOK:
-    #    CIA.cia_indexer(Website(country))
-    for city in URL_CITY_ARRAY:
-        cities.append(Website(city))
-    for city in cities:
-        wikipedia.wiki_study_city(city)
-    """
-
-# READ IN ALL SP500 and NASDAQ INFO
-    nasdaq = readfile("nasdaq.txt")
-    sp100 = readfile("sp500.txt")
-
-#    openstreetmaps.osm_search("moscow idaho")
-
-# READ WIKIPEDIA WEBSITE URLS
-
-    urls = [ \
-        {"type": "stock", "address": "https://en.wikipedia.org/wiki/Apple_Inc."}, \
-        #{"address": "https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=APPLE+INC.%09AAPL&title=Special%3ASearch&go=Go&ns0=1"}, \
-        #{"address": "https://finance.yahoo.com/quote/AAPL?p=AAPL&.tsrc=fin-srch"}, \
-        #{"address": "https://www.eia.gov/naturalgas/crudeoilreserves/"}, \
-        {"type": "news", "address": "https://en.wikipedia.org/wiki/2019"}, \
-        {"type": "other", "address": "https://www.ci.moscow.id.us/507/Daily-Activity-Log"}, \
-        {"type": "quora", "address": "https://www.quora.com/topic/Portland-OR"}, \
-        {"type": "personal", "address": "https://ashercmartin.wordpress.com/links/"}, ]
-
-    # search wikipedia for each stock in the nasdaq
-    # and find the most relevant page
-
-
-    for stock in nasdaq:
-        print ("NASDAQ SEARCH: " + stock)
-        website = Website(wikipedia.wiki_search_url(stock))
-        wikipedia.wiki_study_stock(website)
-
-
-    for stock in sp100:
-        print ("EVALUATING STOCK SP500 " + stock)
-        wikipedia.wiki_research(stock)
-
-
 # GET ALL THE LOCATION INFORMATION FROM THE HTML FILE
 
 """
@@ -140,6 +84,62 @@ def main():
         #google.GOOGLE_PLACES(location)
 """
 
+websites = []
+
+class Website:
+  def __init__(self, url):
+    self.url = url
+    self.html = ""
+    self.xml = ""
+    self.path = ""
+
+  def myfunc(abc):
+    print("Hello my name is " + abc.name)
+
+
+def main_country():
+    """
+    cities = []
+    fact_book = []
+    #for country in CIA_FACT_BOOK:
+    #    CIA.cia_indexer(Website(country))
+    for city in URL_CITY_ARRAY:
+        cities.append(Website(city))
+    for city in cities:
+        wikipedia.wiki_study_city(city)
+    """
+    return
+
+def main():
+
+    urls = [ \
+        {"type": "stock", "address": "https://en.wikipedia.org/wiki/Apple_Inc."}, \
+        #{"address": "https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=APPLE+INC.%09AAPL&title=Special%3ASearch&go=Go&ns0=1"}, \
+        #{"address": "https://finance.yahoo.com/quote/AAPL?p=AAPL&.tsrc=fin-srch"}, \
+        #{"address": "https://www.eia.gov/naturalgas/crudeoilreserves/"}, \
+        {"type": "news", "address": "https://en.wikipedia.org/wiki/2019"}, \
+        {"type": "other", "address": "https://www.ci.moscow.id.us/507/Daily-Activity-Log"}, \
+        {"type": "quora", "address": "https://www.quora.com/topic/Portland-OR"}, \
+        {"type": "personal", "address": "https://ashercmartin.wordpress.com/links/"}, ]
+
+    # search wikipedia for each stock in the nasdaq
+    # and find the most relevant page
+
+    # READ IN ALL SP500 and NASDAQ INFO
+    nasdaq = request.READFILE("nasdaq.txt")
+    sp100 = request.READFILE("sp500.txt")
+
+    for stock in nasdaq:
+        print("NASDAQ SEARCH: " + stock)
+        html = wikipedia.wiki_search(stock)
+
+    for stock in sp100:
+        print ("EVALUATING STOCK SP500 " + stock)
+        wikipedia.wiki_search(stock)
+
+
+
+
 # http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
 # DATABASE: http://ec.europa.eu/eurostat/data/database
 
@@ -162,32 +162,6 @@ print ET.tostring(wiki)
 
 # TODO: request API + https://stackoverflow.com/questions/2018026/what-are-the-differences-between-the-urllib-urllib2-and-requests-module
 
-# COLLABORATORS:
-
-# MAIN SEARCH ENGINE
-
-def SEARCH(url):
-    print(url)
-    html = request.REQUEST(url)
-    wikipedia.findNews(html)
-    return html
-
-
-def writefile(filename, text):
-    file = open(filename, "w")
-    file.write(text)
-    file.close()
-
-
-# read in a file and print it and process the data
-def readfile(filename):
-    lines = []
-    with open(filename) as file:
-        for line in file:
-            line = line.strip()  # preprocess line
-            #print (line)
-            lines.append(line)  # storing everything in memory!
-    return lines
 
 
 main()

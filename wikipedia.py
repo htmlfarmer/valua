@@ -77,32 +77,24 @@ def wiki_xpath_td(website, xpath):
     else:
         return None
 
-def wiki_xfind_name(website, xpath, name):
-    # if there is no location just return the xpath details
-    text = ""
-    root = website.xml
-    title = root.find(xpath)
-    if locations:
-        for index in range(200):
-            for location in locations:
-                text = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr['+ str(index) +']/').text
-                if text and (text.lower() == location.lower()) and (location == locations[len(locations)-1]):
-                    text = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr['+ str(index) +']/td').text
-                    return text
-            print("check xpath location details of website at index " + str(index))
-    else:  # check the location details
-        if title is not None:
-            text = title.text
-            return text
-        else:
-            return None
-    return
 
-#    \\xe2 Estimate
-#    Density
-#    Urban
-#    Metro
-#    CSA
+def wiki_search(keywords):
+    search_terms = keywords.replace(" ", "+")  # replace spaces with +'s
+    search_terms = search_terms.replace("\t", "%09")  # replace tabs
+    url = 'https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=' + search_terms + '&title=Special%3ASearch&go=Go&ns0=1'
+    path = "./search/"
+    html = FILE_REQUEST(url, path)
+    xml = ET.fromstring(html)
+    table = xml.findall('.//*[@id="mw-content-text"]/div[3]/ul/li')
+    similarity = []
+    for element in table:
+        if element.find('div/a') is not None:  # check to see if we have a search result
+            search_result = element.find('div/a').attrib["title"]
+            similarity.append(similar(search_result, keywords))
+
+    maxindex = similarity.index(max(similarity))
+    url = "https://en.wikipedia.org" + table[maxindex].find('div/a').attrib["href"]
+    return url
 
 
 def wiki_xtable(website, xpath, entry):
@@ -164,9 +156,6 @@ def wiki_study_city(website):
     return
 
 
-def wiki_location_estimate():
-    return
-
 
 # source: https://stackoverflow.com/questions/54516687/how-to-print-get-specific-lines-in-an-html-file-in-python-3
 # https://stackoverflow.com/questions/11709079/parsing-html-using-python
@@ -205,40 +194,6 @@ def largest(arr):
 
     return index
 
-
-# find which of the returned links can be used
-def wiki_study_stock(website):
-    website.path = "./stocks/"
-    website.html = FILE_REQUEST(website.url, website.path)
-    website.xml = ET.fromstring(website.html)
-    xpath = './/*[@id="mw-content-text"]/div[3]/ul/li[1]/div[' + str(1) + ']/a'
-    # did the search result have good data or not
-    if website.xml.find(xpath) is None:  # this means that a search was NOT successful
-        print("XPATH ERROR! Search Result Failed.  check to see if there was a search result?")
-        return None
-    else:  # grab the search result and go to that website to read the stock market info
-        similarity = []
-        for i in range(20):  # check the first 10 search results
-            index = './/*[@id="mw-content-text"]/div[3]/ul/li[' + str(i + 1) + ']/div[1]/a'
-            if website.xml.find(index) is not None:  # check to see if we have a search result
-                search_result = website.xml.find(index).attrib["title"]
-                similarity.append(similar(search_result, keywords))
-            else:
-                break  # break from the loop
-        maxindex = similarity.index(max(similarity))
-        # now go to the similarity index and pick that one to forward and get the href http address
-        xpath = './/*[@id="mw-content-text"]/div[3]/ul/li[' + str(maxindex + 1) + ']/div[1]/a'
-        website_address = "https://en.wikipedia.org" + root.find(xpath).attrib["href"]
-        return website_address
-
-
-def wiki_search_url(keywords):
-    # replace spaces with + and figure out what a %09 is
-    search_terms = keywords.replace(" ", "+")  # replace spaces with +'s
-    search_terms = search_terms.replace("\t", "%09")  # replace tabs
-    # this code does the initial search and checks the search results using various links
-    url = 'https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=' + search_terms + '&title=Special%3ASearch&go=Go&ns0=1'
-    return url
 
 # view the news!
 def wiki_news(html):
