@@ -4,12 +4,13 @@
 
 import datetime
 import wikipedia
+import request
+import CIA
 import census
 import google
 import zillow
 import openstreetmaps
 import time
-
 
 
 #############################################
@@ -18,9 +19,61 @@ import time
 # the main goal of this program is to take in a user input and then search all the cities on earth
 # and find the geo locations and city names of the most likely areas
 
-def MAIN ():
-    wikipedia.wiki_cities()
+URL_CITY_ARRAY = [
+    'https://en.wikipedia.org/wiki/Moscow,_Idaho', \
+    'https://en.wikipedia.org/wiki/Seattle', \
+    'https://en.wikipedia.org/wiki/Singapore', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_A', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_B', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_C', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_D', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_E', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_F', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_G', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_H', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_I', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_J', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_K', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_L', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_M', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_N', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_O', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_P', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Q', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_R', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_S', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_T', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_U', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_V', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_W', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_X', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Y', \
+    'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Z']
 
+CIA_FACT_BOOK = ['https://www.cia.gov/library/publications/the-world-factbook/geos/us.html']
+
+class Website:
+  def __init__(self, url):
+    self.url = url
+    self.html = ""
+    self.xml = ""
+    self.path = ""
+
+  def myfunc(abc):
+    print("Hello my name is " + abc.name)
+
+
+def main():
+    """
+    cities = []
+    fact_book = []
+    #for country in CIA_FACT_BOOK:
+    #    CIA.cia_indexer(Website(country))
+    for city in URL_CITY_ARRAY:
+        cities.append(Website(city))
+    for city in cities:
+        wikipedia.wiki_study_city(city)
+    """
 
 # READ IN ALL SP500 and NASDAQ INFO
     nasdaq = readfile("nasdaq.txt")
@@ -44,28 +97,16 @@ def MAIN ():
     # and find the most relevant page
 
 
-""""
     for stock in nasdaq:
-        print "NASDAQ SEARCH: " + stock
-        wikipedia.wiki_research(stock)
+        print ("NASDAQ SEARCH: " + stock)
+        website = Website(wikipedia.wiki_search_url(stock))
+        wikipedia.wiki_study_stock(website)
+
 
     for stock in sp100:
-        print stock
+        print ("EVALUATING STOCK SP500 " + stock)
         wikipedia.wiki_research(stock)
 
-    for url in urls:
-        print url
-        html = GET_REQUEST(url["address"])
-        writefile("file.html", html)
-        if url["type"] == "stock":
-            wikipedia.wiki_stock(html)
-        elif url["type"] == "news":
-            wikipedia.wiki_news(html),  # do not use ()
-        elif url["type"] == "quora":
-            print "quora"
-        else:
-            print "other"
-    """
 
 # GET ALL THE LOCATION INFORMATION FROM THE HTML FILE
 
@@ -103,10 +144,12 @@ def MAIN ():
 # DATABASE: http://ec.europa.eu/eurostat/data/database
 
 
-print "==================================================="
-print "  REPORT # " , datetime.datetime.now()
-print "    DATE : ", datetime.date.today().strftime("%B") + " " + datetime.date.today().strftime("%d") + ", " + datetime.date.today().strftime("%Y")
-print "==================================================="
+print("===================================================")
+print("  REPORT # " + str(datetime.datetime.now()))
+print("    DATE : " + str(datetime.date.today().strftime("%B")) + " " \
+      + str(datetime.date.today().strftime("%d")) + ", " \
+      + str(datetime.date.today().strftime("%Y")))
+print("===================================================")
 
 from request import REQUEST
 
@@ -122,9 +165,10 @@ print ET.tostring(wiki)
 # COLLABORATORS:
 
 # MAIN SEARCH ENGINE
+
 def SEARCH(url):
-    print url
-    html = GET_REQUEST(url)
+    print(url)
+    html = request.REQUEST(url)
     wikipedia.findNews(html)
     return html
 
@@ -145,4 +189,5 @@ def readfile(filename):
             lines.append(line)  # storing everything in memory!
     return lines
 
-MAIN()
+
+main()

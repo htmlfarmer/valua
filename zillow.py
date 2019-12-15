@@ -31,14 +31,13 @@ def PARSE_ZILLOW_XML(text):
     doc = {"zpid" : zpid, "price" : zestimate, "low" : low, "high" : high, \
             "latitude" : latitude, "longitude" : longitude, "citystatezip" : citystatezip, \
             "address" : address, "hmean" : hmean, "gmean" : gmean}
-    print doc
     return doc
 
 def ZILLOW(address, citystatezip):
     # FAQ: https://www.zillow.com/howto/api/GetSearchResults.htm (main starting point)
     # FAQ: https://www.zillow.com/howto/api/GetUpdatedPropertyDetails.htm
     # http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=<ZWSID>&address=2114+Bigelow+Ave&citystatezip=Seattle%2C+WA
-    print "LOOKUP ADDRESS: " + address + " " + citystatezip
+    print ("LOOKUP ADDRESS: " + address + " " + citystatezip)
     address_url = address.replace(" ", "+")
     citystatezip_url = citystatezip.replace(" ", "+")
     url = "http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=" + ZILLOW_KEY + "&address=" + address_url + "&citystatezip=" + citystatezip_url

@@ -11,8 +11,17 @@ Adverb phrase (ADVP): Adverb phrases are used as modifiers for nouns, verbs, or 
 Prepositional phrase (PP): These phrases usually contain lexical components like nouns, pronouns, and so on.
 """
 
+"""
+LDA MODEL:
+Documents that have similar words usually have the same topic
+Documents that have groups of words frequently occurring together usually have the same topic.
+"""
+
 # it maybe wise to use a sqlite3 implementation rather then JSON
 # https://stackoverflow.com/questions/11747527/how-to-connect-javascript-to-python-sharing-data-with-json-format-in-both-ways
+
+# there is a really cool graph that i should think about using for topic modeling
+# https://www.machinelearningplus.com/nlp/topic-modeling-visualization-how-to-present-results-lda-models/
 
 import re
 
@@ -143,3 +152,4 @@ def frequency(html):
     p1 = NLP("John", 36)
     p1.myfunc()
     return sorteddict
+

@@ -1,16 +1,12 @@
-import urllib2
-import socket # needed for timeout
+import urllib.request
 
 # HTTP REQUEST of some address
 def REQUEST(address):
-    timeout = 60
-    socket.setdefaulttimeout(timeout)
-    user_agent = 'VALUA. + NLP RESEARCH SCIENCE (Linux/MacOS; Pacific North West Coast, USA)'
-    headers = { 'User-Agent' : user_agent }
-    req = urllib2.Request(url=address, headers=headers)
-    response = urllib2.urlopen(req)
-    html = response.read()
-    print "REQUEST (ONLINE): " + address
+    req = urllib.request.Request(address)
+    req.add_header('User-Agent', 'VALUA. + NLP RESEARCH / SCIENCE (Linux/MacOS; Pacific North West Coast, USA)')
+    response = urllib.request.urlopen(req)
+    html = response.read().decode('utf-8')  # make sure its all text not binary
+    print("REQUEST (ONLINE): " + address)
     return html
 
 
@@ -30,11 +26,11 @@ def FILE_IO(file):
     if not os.path.isdir(directory):
         os.mkdir(directory) # make a new directory
     if type == "write":
-        file = open(file_path, type)
+        file = open(file_path, "w") # for python 2.7 you need the full word "write"?
         file.write(text)
         file.close()
     elif type == "read" and os.path.exists(file_path): # read the old file
-        file = open(file_path, type)
+        file = open(file_path, "r") # for python 2.7 you need the full word "read"?
         text = file.read()
         file.close()
     else:
@@ -59,7 +55,7 @@ def READ_FILE_REQUEST(address, directory):
             "type": "read"}
     html = FILE_IO(data)
     if html is None:
-        print "WARNING NO LOCAL COPY OF WEBSITE: " + filename
+        print("WARNING NO LOCAL COPY OF WEBSITE: " + filename)
     return html
 
 

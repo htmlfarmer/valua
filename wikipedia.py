@@ -1,72 +1,165 @@
+import re  # for regular expressions string formatting
 import xml.etree.ElementTree as ET
 from request import FILE_REQUEST
 import nlp
 
+
+class Wiki:
+    def __init__(self, url):
+        self.url = url
+
+    def myfunc(self):
+        print("Hello my name is " + self.name)
 
 
 def wiki_save_xpath(root, xpath):
     # xpath = ".//*[@id="mw-content-text"]/div/table/tbody/tr[2]/td[1]/a"
     address = "https://en.wikipedia.org" + root.find(xpath).attrib["href"]
     html = FILE_REQUEST(address, "./city/")
-    return html # rememmber this is a NEW root! not the same at the previous.
+    return html  # rememmber this is a NEW root! not the same at the previous.
+
 
 # this part of the program will be valuable to study
 # List of towns and cities with 100,000 or more inhabitants
-def wiki_cities():
-    # first load all the cities from A to Z into a file
-    # read in each city
-    # read in the coordinates for the city
-    # save the name of the city and country to the file
-
-    URL_CITY_ARRAY = [
-        'https://en.wikipedia.org/wiki/Moscow,_Idaho', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_A', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_B', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_C', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_D', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_E', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_F', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_G', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_H', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_I', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_J', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_K', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_L', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_M', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_N', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_O', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_P', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Q', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_R', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_S', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_T', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_U', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_V', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_W', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_X', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Y', \
-        'https://en.wikipedia.org/wiki/List_of_towns_and_cities_with_100,000_or_more_inhabitants/cityname:_Z']
 
 
-# there is a really cool graph that i should think about using for topic modeling
-# https://www.machinelearningplus.com/nlp/topic-modeling-visualization-how-to-present-results-lda-models/
-    for city in URL_CITY_ARRAY:
-        html = FILE_REQUEST(city, "./city/")
-        root = ET.fromstring(html)
-        for index in range(2, 2000): #todo add code to check the correct END index
-            if index == 267:
-                print "WOW SLOW DOWN"
-            xpath_city = './/*[@id="mw-content-text"]/div/table/tbody/tr[' + str(index) + ']/td[1]/a'
-            xpath_country = './/*[@id="mw-content-text"]/div/table/tbody/tr[' + str(index) + ']/td[2]/a'
-            if xpath_city is None:
-                break # we found all the cities and countries!
-            print "    CITY = " + root.find(xpath_city).text
-            print " COUNTRY = " + root.find(xpath_country).text
-            html_city = wiki_save_xpath(root, xpath_city)
-            html_country = wiki_save_xpath(root, xpath_country)
-            print str(nlp.frequency(html_city))
-            print str(nlp.frequency(html_country))
-        print "FILE REQUEST to ./city/"
+def wiki_city_index(website):
+    # there is a really cool graph that i should think about using for topic modeling
+    # https://www.machinelearningplus.com/nlp/topic-modeling-visualization-how-to-present-results-lda-models/
+    website.path = "./city/"
+    website.html = FILE_REQUEST(website.url, website.path)
+    website.xml = ET.fromstring(website.html)
+    root = website.xml
+    for index in range(2, 2000):  # todo add code to check the correct END index
+        if index == 267:
+            print("WOW SLOW DOWN")
+        xpath_city = './/*[@id="mw-content-text"]/div/table/tbody/tr[' + str(index) + ']/td[1]/a'
+        xpath_country = './/*[@id="mw-content-text"]/div/table/tbody/tr[' + str(index) + ']/td[2]/a'
+        if xpath_city is None:
+            break  # we found all the cities and countries!
+        print("    CITY = " + root.find(xpath_city).text)
+        print(" COUNTRY = " + root.find(xpath_country).text)
+        html_city = wiki_save_xpath(root, xpath_city)
+        html_country = wiki_save_xpath(root, xpath_country)
+        print(str(nlp.frequency(html_city)))
+        print(str(nlp.frequency(html_country)))
+        print("FILE REQUEST to ./city/")
+
+    return
+
+
+# return the value at a given xpath
+def wiki_xpath(website, xpath):
+    path = website.xml.find(xpath)
+    if path.text:
+        return path.text
+    else:
+        return None
+
+# return the value at a given xpath
+# (website, xpath_population_text, "total")
+# xpath_population_text = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[23]/th'
+
+
+def wiki_xpath_td(website, xpath):
+    # left element //*[@id="mw-content-text"]/div/table[1]/tbody/tr[24]/th
+    # right element //*[@id="mw-content-text"]/div/table[1]/tbody/tr[24]/td
+    # find the last / and remove everthing after the /
+    if xpath.rfind("tr["):
+        end = xpath.rfind("]")
+        xpath = xpath[0:end+1]
+        left_xpath = website.xml.find(xpath+"/th")
+        right_xpath = website.xml.find(xpath+"/td")
+        if right_xpath is not None:
+            return right_xpath.text
+        else:
+            return None
+    else:
+        return None
+
+def wiki_xfind_name(website, xpath, name):
+    # if there is no location just return the xpath details
+    text = ""
+    root = website.xml
+    title = root.find(xpath)
+    if locations:
+        for index in range(200):
+            for location in locations:
+                text = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr['+ str(index) +']/').text
+                if text and (text.lower() == location.lower()) and (location == locations[len(locations)-1]):
+                    text = root.find('.//*[@id="mw-content-text"]/div/table[1]/tbody/tr['+ str(index) +']/td').text
+                    return text
+            print("check xpath location details of website at index " + str(index))
+    else:  # check the location details
+        if title is not None:
+            text = title.text
+            return text
+        else:
+            return None
+    return
+
+#    \\xe2 Estimate
+#    Density
+#    Urban
+#    Metro
+#    CSA
+
+
+def wiki_xtable(website, xpath, entry):
+    start = xpath.rfind("tr[")
+    end = xpath.rfind("]")
+    table = website.xml.findall(xpath[0:start+2])
+    th = ""
+    td = ""
+    for index in table:
+        if index.find("th/a") is not None: #check to see if (link)
+            th = index.find("th/a").text
+        elif index.find("th") is not None:
+            th = index.find("th").text
+        if index.find("td/a") is not None: #check to see if (link)
+            td = index.find("td/a").text
+        elif index.find("td") is not None:
+            td = index.find("td").text
+        if th:
+            th = re.sub(r'\W+', '', th).lower().strip()
+        if td:
+            td = re.sub(r'\W+', '', td).lower() # spaces are valid be careful
+        if th == entry:
+            break
+        else:  # erase the found results
+            th = None
+            td = None
+    return td
+
+
+def wiki_demographics(website):
+
+    xpath_total_population = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[24]/th'
+    xpath_population_density = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[26]/th'
+    xpath_page_title = './/*[@id="firstHeading"]'
+
+    name = wiki_xpath(website, xpath_page_title)
+    population = wiki_xtable(website, xpath_total_population, "estimate")
+    density = wiki_xtable(website, xpath_population_density, "density")
+    coordinates = wiki_coordinates(website)
+    # search the side table for demographic info
+    demographics = {'name': name, 'population': population, 'density': density, 'coordinates': coordinates}
+    return demographics
+
+
+def wiki_study_city(website):
+    website.path = "./city/"
+    website.html = FILE_REQUEST(website.url, website.path)
+    website.xml = ET.fromstring(website.html)
+
+    # get demographics info
+    demographics = wiki_demographics(website)
+    print("CITY NAME: " + demographics['name'])
+    print("POPULATION: (estimate) " + demographics['population'])
+    print("DENSITY: " + demographics['density'])
+    print("COORDINATES: " + str(demographics['coordinates']))
+
+    # get the word frequency
 
     return
 
@@ -95,7 +188,7 @@ def similar(a, b):
     b = b.lower()
     similarity = SequenceMatcher(lambda x: x in " \t", a, b)
     s = round(similarity.ratio(), 3)
-    print "SequenceMatcher: (" + a + ") : (" + b + ") ratio = " + str(s)
+    print("SequenceMatcher: (" + a + ") : (" + b + ") ratio = " + str(s))
     return s
 
 
@@ -114,18 +207,21 @@ def largest(arr):
 
 
 # find which of the returned links can be used
-def wiki_study_search(keywords, root):
+def wiki_study_stock(website):
+    website.path = "./stocks/"
+    website.html = FILE_REQUEST(website.url, website.path)
+    website.xml = ET.fromstring(website.html)
     xpath = './/*[@id="mw-content-text"]/div[3]/ul/li[1]/div[' + str(1) + ']/a'
     # did the search result have good data or not
-    if root.find(xpath) is None:  # this means that a search was NOT successful
-        print "XPATH ERROR! Search Result Failed.  check to see if there was a search result?"
+    if website.xml.find(xpath) is None:  # this means that a search was NOT successful
+        print("XPATH ERROR! Search Result Failed.  check to see if there was a search result?")
         return None
     else:  # grab the search result and go to that website to read the stock market info
         similarity = []
         for i in range(20):  # check the first 10 search results
             index = './/*[@id="mw-content-text"]/div[3]/ul/li[' + str(i + 1) + ']/div[1]/a'
-            if root.find(index) is not None:  # check to see if we have a search result
-                search_result = root.find(index).attrib["title"]  # //*[@id="mw-content-text"]/div[3]/ul/li[1]/div[1]/a/span
+            if website.xml.find(index) is not None:  # check to see if we have a search result
+                search_result = website.xml.find(index).attrib["title"]
                 similarity.append(similar(search_result, keywords))
             else:
                 break  # break from the loop
@@ -136,27 +232,13 @@ def wiki_study_search(keywords, root):
         return website_address
 
 
-def wiki_research(keywords):
-    print "WIKIPEDIA RESEARCH on: " + keywords
+def wiki_search_url(keywords):
     # replace spaces with + and figure out what a %09 is
     search_terms = keywords.replace(" ", "+")  # replace spaces with +'s
     search_terms = search_terms.replace("\t", "%09")  # replace tabs
     # this code does the initial search and checks the search results using various links
     url = 'https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=' + search_terms + '&title=Special%3ASearch&go=Go&ns0=1'
-    html = REQUEST(url)
-    # study the document for the search results
-    root = ET.fromstring(html)
-    # get the first result of the search and test it to see if it is correct
-    # the most important step is to check which of the search results have the closest match
-    # check each search result and see if the title or whatever matches closely...
-    website = wiki_study_search(keywords, root)
-    if website is not None:
-        html = REQUEST(website)
-        wiki_stock(html) # we can not use the old root because we need a new website.
-    else:
-        print "STOCK INFO MISSING FOR WIKIPEDIA: " + keywords  # since its an official stock page we can do a regular search
-    return website
-
+    return url
 
 # view the news!
 def wiki_news(html):
@@ -168,7 +250,7 @@ def wiki_news(html):
     for m in range(12):
         index = './/*[@id="mw-content-text"]/div/ul[' + str(m + 1) + ']'
         month.append(root.find(index))
-    print "WIKI NEWS SAFE!"
+    print("WIKI NEWS SAFE!")
     # read the data for each entry
     # for m in range(12):
     #    print "date: " + month[m]._children[i] + " " + month[m]
@@ -187,6 +269,7 @@ Number of employees
 132,000[2] (2018)
 """
 
+
 def text_geocoder(text):
     # u'37.3349\xc2N 122.0090\xc2W'
     latitude = ""
@@ -198,33 +281,30 @@ def text_geocoder(text):
     if text.find("N") is not -1:
         start = 0
         end = text.find("N ", start)
-        latitude = text[start:end-1].replace('\n', '').replace(' ', '')
+        latitude = text[start:end - 1].replace('\n', '').replace(' ', '')
     if text.find("S") is not -1:
         start = 0
         end = text.find("S ", start)
-        latitude = "-" + text[start:end-1].replace('\n', '').replace(' ', '')
+        latitude = "-" + text[start:end - 1].replace('\n', '').replace(' ', '')
     # find LOGITUDE : WEST or EAST
     start = end + 1  # end of N or S
     if text.find("W") is not -1:
         end = text.find("W", start + 1)
-        longitude = "-" + text[start:end-1].replace('\n', '').replace(' ', '')
+        longitude = "-" + text[start:end - 1].replace('\n', '').replace(' ', '')
     if text.find("E") is not -1:
         end = text.find("W", start + 1)
         longitude = text[start:end - 1].replace('\n', '').replace(' ', '')
     geocode = {"longitude": longitude, "latitude": latitude}
     return geocode
 
+
 # this function gets the latitude and logitude coodrinates
 # we need to add some code to do some more sophiticated search for the location
-def get_location(root):
-    # select the revenue index
-    # select the latitude and logitude of the business or stock
-    coordinates = root.find('.//*[@id="coordinates"]/span/a/span[3]/span[1]')
+def wiki_coordinates(website):
+    coordinates = website.xml.find('.//*[@class="geo-dec"]')
     if coordinates is not None:
-        text = root.find('.//*[@id="coordinates"]/span/a/span[3]/span[1]').text
-        geocode = text_geocoder(text)
-        print "FOUND EASY COORDINATES: " + str(geocode)
-    else: # we need to look deeper in the text file for the geocode (hopefully not too carefully
+        geocode = text_geocoder(coordinates.text)
+    else:  # we need to look deeper in the text file for the geocode (hopefully not too carefully
         # search for Headquarters //*[@id="mw-content-text"]/div/table[1]/tbody/tr[7]/td/text()[1]
         row = 0  # we dont know what row is the correct xpath for "Revenue" yet
         xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td/'
@@ -234,14 +314,15 @@ def get_location(root):
                 if root.find(xpath).text == "Headquarters":
                     xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td'
                     headquarters = root.find(xpath).text
-                    xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td/div[' + str(1) + ']/a'
+                    xpath = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[' + str(row) + ']/td/div[' + str(
+                        1) + ']/a'
                     if root.find(xpath) is not None:
                         headquarters = headquarters + " " + root.find(xpath).text
                     import openstreetmaps
                     coordinates = openstreetmaps.OPEN_XML_GEOCODE(headquarters)
                     break  # we found the correct row
         else:
-            print "unable to find coordinates : latitude & logitude"
+            print("unable to find coordinates : latitude & logitude")
     return coordinates
 
 
@@ -272,7 +353,7 @@ def get_financial(root):
             if root.find(xpath).text == "Revenue":
                 break  # we found the correct row
     else:
-        print "xpath not found for WIKI FINANCIALs"
+        print("xpath not found for WIKI FINANCIALs")
         return None
 
     # check to see if the xpath location exists (not sure about tail)
@@ -294,17 +375,17 @@ def get_financial(root):
                  "net_income": net_income,
                  "total_assets": total_assets,
                  "total_equity": total_equity}
-        print "FINANICAL INFO: " + str(money)
+        print("FINANICAL INFO: " + str(money))
         return money
 
 
 # this function gets the financial information from each stock on wikipedia
 def wiki_stock(html):
-    print "WIKIPEDIA STOCK INFO FOUND!"
+    print("WIKIPEDIA STOCK INFO FOUND!")
     # doccumentation on elementtree
     # https://docs.python.org/2/library/xml.etree.elementtree.html
     root = ET.fromstring(html)
-    coordinates = get_location(root)
-    print "COORDINATES (lat/lon): " + str(coordinates)
+    #coordinates = get_location(root)
+    print("COORDINATES (lat/lon): " + str(coordinates))
     financial = get_financial(root)
     return financial

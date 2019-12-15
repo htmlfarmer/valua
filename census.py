@@ -22,7 +22,7 @@ def CENSUS_ECONOMIC ():
     url = "https://api.census.gov/data/2012/ewks?get=" + FIELDS + "&for=state:*&NAICS2012=" + NAICS2012 \
     + "&key=" + US_CENSUS_KEY
     text = REQUEST(url)
-    print text
+    print (text)
     return text
 
 # https://www.census.gov/data/developers/data-sets/economic-indicators.html
@@ -58,7 +58,7 @@ def CENSUS_GEOCODE (address):
         longitude = None
         latitude = None
     geocode = {"longitude" : longitude, "latitude" : latitude}
-    print geocode
+    print (geocode)
     return geocode
 
 # https://www.census.gov/data/developers/data-sets/economic-indicators.html
