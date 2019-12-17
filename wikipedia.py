@@ -1,6 +1,6 @@
 import re  # for regular expressions string formatting
-import xml.etree.ElementTree as ET
-from request import FILE_REQUEST
+import xml.etree.ElementTree as ElementTree
+from request import REQUEST_FILE
 import nlp
 
 
@@ -8,14 +8,14 @@ class Wiki:
     def __init__(self, url):
         self.url = url
 
-    def myfunc(self):
+    def xml(self):
         print("Hello my name is " + self.name)
 
 
 def wiki_save_xpath(root, xpath):
     # xpath = ".//*[@id="mw-content-text"]/div/table/tbody/tr[2]/td[1]/a"
     address = "https://en.wikipedia.org" + root.find(xpath).attrib["href"]
-    html = FILE_REQUEST(address, "./city/")
+    html = REQUEST_FILE(address, "./city/")
     return html  # rememmber this is a NEW root! not the same at the previous.
 
 
@@ -27,8 +27,8 @@ def wiki_city_index(website):
     # there is a really cool graph that i should think about using for topic modeling
     # https://www.machinelearningplus.com/nlp/topic-modeling-visualization-how-to-present-results-lda-models/
     website.path = "./city/"
-    website.html = FILE_REQUEST(website.url, website.path)
-    website.xml = ET.fromstring(website.html)
+    website.html = REQUEST_FILE(website.url, website.path)
+    website.xml = ElementTree.fromstring(website.html)
     root = website.xml
     for index in range(2, 2000):  # todo add code to check the correct END index
         if index == 267:
@@ -56,6 +56,7 @@ def wiki_xpath(website, xpath):
     else:
         return None
 
+
 # return the value at a given xpath
 # (website, xpath_population_text, "total")
 # xpath_population_text = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[23]/th'
@@ -67,9 +68,9 @@ def wiki_xpath_td(website, xpath):
     # find the last / and remove everthing after the /
     if xpath.rfind("tr["):
         end = xpath.rfind("]")
-        xpath = xpath[0:end+1]
-        left_xpath = website.xml.find(xpath+"/th")
-        right_xpath = website.xml.find(xpath+"/td")
+        xpath = xpath[0:end + 1]
+        left_xpath = website.xml.find(xpath + "/th")
+        right_xpath = website.xml.find(xpath + "/td")
         if right_xpath is not None:
             return right_xpath.text
         else:
@@ -82,40 +83,40 @@ def wiki_search(keywords):
     search_terms = keywords.replace(" ", "+")  # replace spaces with +'s
     search_terms = search_terms.replace("\t", "%09")  # replace tabs
     url = 'https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=' + search_terms + '&title=Special%3ASearch&go=Go&ns0=1'
-    path = "./search/"
-    html = FILE_REQUEST(url, path)
-    xml = ET.fromstring(html)
+    directory = "./wikipedia/"
+    html = REQUEST_FILE(url, directory=directory, filename=None)
+    xml = ElementTree.fromstring(html)
     table = xml.findall('.//*[@id="mw-content-text"]/div[3]/ul/li')
     similarity = []
     for element in table:
         if element.find('div/a') is not None:  # check to see if we have a search result
             search_result = element.find('div/a').attrib["title"]
             similarity.append(similar(search_result, keywords))
-
-    maxindex = similarity.index(max(similarity))
-    url = "https://en.wikipedia.org" + table[maxindex].find('div/a').attrib["href"]
+    if similarity:
+        maxindex = similarity.index(max(similarity))
+        url = "https://en.wikipedia.org" + table[maxindex].find('div/a').attrib["href"]
     return url
 
 
 def wiki_xtable(website, xpath, entry):
     start = xpath.rfind("tr[")
     end = xpath.rfind("]")
-    table = website.xml.findall(xpath[0:start+2])
+    table = website.xml.findall(xpath[0:start + 2])
     th = ""
     td = ""
     for index in table:
-        if index.find("th/a") is not None: #check to see if (link)
+        if index.find("th/a") is not None:  # check to see if (link)
             th = index.find("th/a").text
         elif index.find("th") is not None:
             th = index.find("th").text
-        if index.find("td/a") is not None: #check to see if (link)
+        if index.find("td/a") is not None:  # check to see if (link)
             td = index.find("td/a").text
         elif index.find("td") is not None:
             td = index.find("td").text
         if th:
             th = re.sub(r'\W+', '', th).lower().strip()
         if td:
-            td = re.sub(r'\W+', '', td).lower() # spaces are valid be careful
+            td = re.sub(r'\W+', '', td).lower()  # spaces are valid be careful
         if th == entry:
             break
         else:  # erase the found results
@@ -125,7 +126,6 @@ def wiki_xtable(website, xpath, entry):
 
 
 def wiki_demographics(website):
-
     xpath_total_population = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[24]/th'
     xpath_population_density = './/*[@id="mw-content-text"]/div/table[1]/tbody/tr[26]/th'
     xpath_page_title = './/*[@id="firstHeading"]'
@@ -141,8 +141,8 @@ def wiki_demographics(website):
 
 def wiki_study_city(website):
     website.path = "./city/"
-    website.html = FILE_REQUEST(website.url, website.path)
-    website.xml = ET.fromstring(website.html)
+    website.html = REQUEST_FILE(website.url, website.path)
+    website.xml = ElementTree.fromstring(website.html)
 
     # get demographics info
     demographics = wiki_demographics(website)
@@ -154,7 +154,6 @@ def wiki_study_city(website):
     # get the word frequency
 
     return
-
 
 
 # source: https://stackoverflow.com/questions/54516687/how-to-print-get-specific-lines-in-an-html-file-in-python-3
@@ -199,7 +198,7 @@ def largest(arr):
 def wiki_news(html):
     # //*[@id="Predicted_and_scheduled"]
     # //*[@id="November"]
-    root = ET.fromstring(html)
+    root = ElementTree.fromstring(html)
     # //*[@id="mw-content-text"]/div/ul[1] #january
     month = []
     for m in range(12):
@@ -339,8 +338,8 @@ def wiki_stock(html):
     print("WIKIPEDIA STOCK INFO FOUND!")
     # doccumentation on elementtree
     # https://docs.python.org/2/library/xml.etree.elementtree.html
-    root = ET.fromstring(html)
-    #coordinates = get_location(root)
+    root = ElementTree.fromstring(html)
+    # coordinates = get_location(root)
     print("COORDINATES (lat/lon): " + str(coordinates))
     financial = get_financial(root)
     return financial

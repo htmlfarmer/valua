@@ -2,15 +2,12 @@
 # November 2019
 # About: this program is designed to help search for news and evaluate it.
 
+from website import Website
 import datetime
 import wikipedia
-import request
-import CIA
-import census
-import google
-import zillow
-import openstreetmaps
-import time
+from file import READ
+
+websites = []
 
 
 #############################################
@@ -84,19 +81,6 @@ CIA_FACT_BOOK = ['https://www.cia.gov/library/publications/the-world-factbook/ge
         #google.GOOGLE_PLACES(location)
 """
 
-websites = []
-
-class Website:
-  def __init__(self, url):
-    self.url = url
-    self.html = ""
-    self.xml = ""
-    self.path = ""
-
-  def myfunc(abc):
-    print("Hello my name is " + abc.name)
-
-
 def main_country():
     """
     cities = []
@@ -126,14 +110,19 @@ def main():
     # and find the most relevant page
 
     # READ IN ALL SP500 and NASDAQ INFO
-    nasdaq = request.READFILE("nasdaq.txt")
-    sp100 = request.READFILE("sp500.txt")
+    nasdaq = READ("nasdaq.txt", ".")
+    sp100 = READ("sp500.txt")
 
-    for stock in nasdaq:
+    for stock in nasdaq.splitlines():
         print("NASDAQ SEARCH: " + stock)
-        html = wikipedia.wiki_search(stock)
+        url = wikipedia.wiki_search(stock)
+        webpage = Website(url)
+        webpage.set_directory("./wikipedia/")
+        html = webpage.get_html()
+        xml = webpage.get_xml()
+        websites.append(webpage)
 
-    for stock in sp100:
+    for stock in sp100.splitlines():
         print ("EVALUATING STOCK SP500 " + stock)
         wikipedia.wiki_search(stock)
 
