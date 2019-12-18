@@ -2,12 +2,54 @@
 # November 2019
 # About: this program is designed to help search for news and evaluate it.
 
-from website import Website
 import datetime
 import wikipedia
 from file import READ
-
+from website import Website
 websites = []
+
+
+def main():
+    print("===================================================")
+    print("  REPORT # " + str(datetime.datetime.now()))
+    print("    DATE : " + str(datetime.date.today().strftime("%B")) + " " \
+          + str(datetime.date.today().strftime("%d")) + ", " \
+          + str(datetime.date.today().strftime("%Y")))
+    print("===================================================")
+
+    test_wiki_section_text()
+    test_table_of_contents()
+    test_city()
+    test_stocks()
+
+
+def test_wiki_section_text():
+    websites = []
+    for city in URL_CITY_ARRAY:
+        website = Website(city)
+        wikipedia.wiki_get_section(website, "Economy")
+        websites.append(website)
+
+
+def test_table_of_contents():
+    locations = []
+    for city in URL_CITY_ARRAY:
+        location = Website(city)
+        wikipedia.wiki_get_contents(location)
+        locations.append(location)
+# http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
+# DATABASE: http://ec.europa.eu/eurostat/data/database
+
+
+
+"""
+# Do a Wikipedia Lookup Based on geolocation (Cape Cod, MA) http://api.geonames.org/findNearbyWikipedia?lat=41.618116&lng=-70.485361&username=demo
+wikihtml = GET_REQUEST("http://api.geonames.org/findNearbyWikipedia?lat="+ str(lat) +"&lng="+ str(lng) + "&username=asolr")
+wiki = ET.fromstring(wikihtml) # if you need the xml data type
+print ET.tostring(wiki)
+"""
+
+# TODO: request API + https://stackoverflow.com/questions/2018026/what-are-the-differences-between-the-urllib-urllib2-and-requests-module
 
 
 #############################################
@@ -17,6 +59,9 @@ websites = []
 # and find the geo locations and city names of the most likely areas
 
 URL_CITY_ARRAY = [
+    'https://en.wikipedia.org/wiki/Vancouver', \
+    'https://en.wikipedia.org/wiki/Victoria,_British_Columbia', \
+    'https://en.wikipedia.org/wiki/Spokane,_Washington', \
     'https://en.wikipedia.org/wiki/Moscow,_Idaho', \
     'https://en.wikipedia.org/wiki/Seattle', \
     'https://en.wikipedia.org/wiki/Singapore', \
@@ -81,7 +126,13 @@ CIA_FACT_BOOK = ['https://www.cia.gov/library/publications/the-world-factbook/ge
         #google.GOOGLE_PLACES(location)
 """
 
-def main_country():
+def test_city():
+    cities = []
+    for city in URL_CITY_ARRAY:
+        location = Website(city)
+        location.set_directory('./wikipedia/')
+        html = location.get_html()
+        cities.append(location)
     """
     cities = []
     fact_book = []
@@ -94,21 +145,7 @@ def main_country():
     """
     return
 
-def main():
-
-    urls = [ \
-        {"type": "stock", "address": "https://en.wikipedia.org/wiki/Apple_Inc."}, \
-        #{"address": "https://en.wikipedia.org/w/index.php?cirrusUserTesting=glent_m0&search=APPLE+INC.%09AAPL&title=Special%3ASearch&go=Go&ns0=1"}, \
-        #{"address": "https://finance.yahoo.com/quote/AAPL?p=AAPL&.tsrc=fin-srch"}, \
-        #{"address": "https://www.eia.gov/naturalgas/crudeoilreserves/"}, \
-        {"type": "news", "address": "https://en.wikipedia.org/wiki/2019"}, \
-        {"type": "other", "address": "https://www.ci.moscow.id.us/507/Daily-Activity-Log"}, \
-        {"type": "quora", "address": "https://www.quora.com/topic/Portland-OR"}, \
-        {"type": "personal", "address": "https://ashercmartin.wordpress.com/links/"}, ]
-
-    # search wikipedia for each stock in the nasdaq
-    # and find the most relevant page
-
+def test_stocks():
     # READ IN ALL SP500 and NASDAQ INFO
     nasdaq = READ("nasdaq.txt", ".")
     sp100 = READ("sp500.txt")
@@ -125,32 +162,5 @@ def main():
     for stock in sp100.splitlines():
         print ("EVALUATING STOCK SP500 " + stock)
         wikipedia.wiki_search(stock)
-
-
-
-
-# http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
-# DATABASE: http://ec.europa.eu/eurostat/data/database
-
-
-print("===================================================")
-print("  REPORT # " + str(datetime.datetime.now()))
-print("    DATE : " + str(datetime.date.today().strftime("%B")) + " " \
-      + str(datetime.date.today().strftime("%d")) + ", " \
-      + str(datetime.date.today().strftime("%Y")))
-print("===================================================")
-
-from request import REQUEST
-
-"""
-# Do a Wikipedia Lookup Based on geolocation (Cape Cod, MA) http://api.geonames.org/findNearbyWikipedia?lat=41.618116&lng=-70.485361&username=demo
-wikihtml = GET_REQUEST("http://api.geonames.org/findNearbyWikipedia?lat="+ str(lat) +"&lng="+ str(lng) + "&username=asolr")
-wiki = ET.fromstring(wikihtml) # if you need the xml data type
-print ET.tostring(wiki)
-"""
-
-# TODO: request API + https://stackoverflow.com/questions/2018026/what-are-the-differences-between-the-urllib-urllib2-and-requests-module
-
-
 
 main()

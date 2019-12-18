@@ -12,7 +12,6 @@ def REQUEST(address):
     req.add_header('User-Agent', 'VALUA. + NLP RESEARCH / SCIENCE (Linux/MacOS; Pacific North West Coast, USA)')
     response = urllib.request.urlopen(req)
     html = response.read().decode('utf-8')  # make sure its all text not binary
-    print("REQUEST (ONLINE): " + address)
     return html
 
 
@@ -33,5 +32,8 @@ def REQUEST_FILE(address, **kwargs):
     html = READ(filename, directory)
     if html is None:
         html = REQUEST(address)
+        print("REQUEST (ONLINE): " + address)
         WRITE(filename, directory, html)
+    else:
+        print("REQUEST   (FILE): " + address)
     return html

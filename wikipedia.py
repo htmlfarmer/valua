@@ -139,8 +139,49 @@ def wiki_demographics(website):
     return demographics
 
 
+def wiki_get_section(website, name):
+    website.set_directory("./wikipedia/")
+    website.get_html()
+    website.get_xml()
+    xpath = './/*[@id="mw-content-text"]/div/p/*'
+    xpath_title = './/*[@id="Economy"]' # location of the header
+    xpath_additional = './/*[@id="mw-content-text"]/div/div[25]/a' # location of the search for next item with details
+    xpath_first = './/*[@id="mw-content-text"]/div/p[2]'
+    paragraphs = website.get_xml().findall(xpath)
+    text = ""
+    xpath_crazy = './/*[@id="mw-content-text"]/div/p[2]/span/span[1]/a/span/span[6]'
+    for sentence in paragraphs:
+        if sentence.text is not None:
+            text = text + sentence.text
+        if sentence.tail is not None:
+            text = text + sentence.tail
+    return text
+
+def wiki_read_p(paragraph):
+    website.get_xml().findall('.//*[@id="mw-content-text"]/div/p[2]/')
+    return result.text
+
+def wiki_get_contents(website):
+    website.set_directory("./wikipedia/")
+    website.get_html()
+    website.get_xml()
+    xpath = './/*[@id="toc"]/ul/li[1]'
+    start = xpath.rfind("li[")
+    end = xpath.rfind("]")
+    list = website.xml.findall(xpath[0:start + 2])
+    toc = []
+    for index in list:
+        entry = None
+        if index.find('a/span[2]') is not None:  # check to see if (link)
+            entry = index.find('a/span[2]').text
+        if entry:
+            entry = entry.lower()  # spaces are valid be careful
+        toc.append(entry)
+    return toc
+
+
 def wiki_study_city(website):
-    website.path = "./city/"
+    website.set_directory("./wikipedia/")
     website.html = REQUEST_FILE(website.url, website.path)
     website.xml = ElementTree.fromstring(website.html)
 
